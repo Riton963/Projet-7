@@ -4,7 +4,9 @@ import PrimeVue from 'primevue/config';
 import 'primevue/resources/primevue.min.css';
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css';
 import 'primeicons/primeicons.css';
+import Dialog from 'primevue/dialog';
+import router from '@/router';
 const app = createApp(App);
-
 app.use(PrimeVue);
-createApp(App).mount('#app');
+app.component('Dialog', Dialog);
+app.use(router).mount('#app');
