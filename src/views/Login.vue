@@ -3,7 +3,11 @@
     <div class="auth-modal" v-if="isDisabled">
       <h2>Connexion</h2>
       <InputText type="text" v-model="login" placeholder="Email" />
-      <InputText type="text" v-model="password" placeholder="Mot de passe" />
+      <Password
+        v-model="password"
+        :feedback="false"
+        placeholder="Mot de passe"
+      />
       <div v-if="dispalayLoginMsg">{{ loginMsg.message }}</div>
       <Button label="Connexion" class="p-button-raised" @click="loginIn()" />
 
@@ -57,7 +61,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from '@vue/runtime-core';
+import { ref } from '@vue/runtime-core';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Password from 'primevue/password';
@@ -65,7 +69,7 @@ import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import authServices from '../services/auth';
 
-export default defineComponent({
+export default {
   name: 'Login',
   components: {
     InputText,
@@ -89,6 +93,12 @@ export default defineComponent({
         .login(login.value, password.value)
         .then((res) => {
           if (res.status === 200) {
+            const token = {
+              token: res.data.token,
+              uid: res.data.userId,
+            };
+            console.log(res);
+            localStorage.setItem('token', JSON.stringify(token));
             router.push({ name: 'feed' });
           }
         })
@@ -127,7 +137,7 @@ export default defineComponent({
       registerUser,
     };
   },
-});
+};
 </script>
 
 <style lang="scss">

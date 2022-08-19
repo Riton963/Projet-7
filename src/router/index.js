@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import Login from '@/views/Login';
 import Feed from '@/views/Feed';
+import Profile from '@/views/Profile';
+import authGuard from '@/services/authGuard';
 
 const routes = [
   {
@@ -13,6 +15,12 @@ const routes = [
     name: 'feed',
     path: '/feed',
     component: Feed,
+    beforeEnter: authGuard,
+  },
+  {
+    name: 'profile',
+    path: '/profile',
+    component: Profile,
   },
 ];
 

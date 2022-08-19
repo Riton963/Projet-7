@@ -1,32 +1,40 @@
 <template>
   <header class="nav-bar">
-    <div class="container">
-      <img src="./../assets/logo/logo-left.png" alt="" class="logo" />
-      <nav>
-        <a href="#" @click="handleConnexion()">Connexion</a>
-        <a href="#" @click="handleInscription()">Inscription</a>
-      </nav>
-    </div>
+    <nav>
+      <a href="#" @click="handleFeedPage()"
+        ><font-awesome-icon icon="fa-solid fa-house" size="2x"
+      /></a>
+      <a href="#" @click="handleProfilePage()"
+        ><font-awesome-icon icon="fa-solid fa-user" size="2x"
+      /></a>
+    </nav>
   </header>
 </template>
 
 <script>
-import { defineComponent, ref } from '@vue/runtime-core';
+import { ref } from '@vue/runtime-core';
+import { useRouter } from 'vue-router';
 
-export default defineComponent({
-  name: 'navBar',
+export default {
+  name: 'NavBar',
   components: {},
   props: {},
   setup() {
-    const handleConnexion = () => {};
+    const router = useRouter();
 
-    const handleInscription = () => {};
+    const handleFeedPage = () => {
+      router.push({ name: 'feed' });
+    };
+
+    const handleProfilePage = () => {
+      router.push({ name: 'profile' });
+    };
     return {
-      handleConnexion,
-      handleInscription,
+      handleFeedPage,
+      handleProfilePage,
     };
   },
-});
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -36,24 +44,15 @@ export default defineComponent({
   background-color: #4e5166;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  .container {
-    width: 80%;
-    height: 100%;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    img {
-      width: 260px;
-    }
-  }
   nav {
-    width: 260px;
     a {
-      padding: 30px 25px;
       text-decoration: none;
       color: white;
+      margin: 15px;
     }
   }
 }
