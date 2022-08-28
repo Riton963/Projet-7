@@ -97,7 +97,6 @@ export default {
               token: res.data.token,
               uid: res.data.userId,
             };
-            console.log(res);
             localStorage.setItem('token', JSON.stringify(token));
             router.push({ name: 'feed' });
           }
@@ -110,9 +109,7 @@ export default {
     const registerUser = () => {
       authServices
         .signUp(firstName.value, lastName.value, login.value, password.value)
-        .then((res) => {
-          console.log(res);
-        })
+        .then((res) => {})
         .catch((err) => {
           console.log(err);
         });

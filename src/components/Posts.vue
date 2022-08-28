@@ -1,20 +1,23 @@
 <template class="post-content">
   <div class="post-content">
-    <Card class="post-item">
-      <template #header>
-        <img src="../assets/img/background.jpg" />
+    <Card v-for="post in posts" class="post-item" :key="post.id">
+      <template #header v-if="post.imageUrl">
+        <div class="post-image">
+          <img :src="post.imageUrl" />
+        </div>
       </template>
       <template #title> John Doe </template>
       <template #content>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed
-        consequuntur error repudiandae numquam deserunt quisquam repellat libero
-        asperiores earum nam nobis, culpa ratione quam perferendis esse,
-        cupiditate neque quas!
+        {{ post.description }}
       </template>
       <template #footer>
         <div class="footer-post">
           <div>
-            <font-awesome-icon icon="fa-solid fa-thumbs-up" size="2x" />0
+            <font-awesome-icon
+              icon="fa-solid fa-thumbs-up"
+              size="2x"
+              @click="like()"
+            />0
           </div>
           <div>
             0<font-awesome-icon icon="fa-regular fa-message" size="2x" />
@@ -25,29 +28,21 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, ref } from '@vue/runtime-core';
+import { defineComponent, ref } from '@vue/runtime-core';
 import Button from 'primevue/button';
-import postsServices from '../services/posts';
+import Image from 'primevue/image';
 
 import Card from 'primevue/card';
 export default defineComponent({
   name: 'Posts',
-  components: { Card, Button },
-  setup() {
-    const like = () => {
-      console.log('test');
-    };
+  components: { Card, Button, Image },
+  props: {
+    posts: Object,
+  },
+  setup(props) {
+    props.posts;
+    const like = () => {};
 
-    onMounted(() => {
-      postsServices
-        .getAllPosts()
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    });
     return {
       like,
     };
@@ -65,9 +60,10 @@ export default defineComponent({
     margin: 35px 0;
   }
 }
-.p-card-header {
-  height: 380px;
-  overflow: hidden;
+
+img {
+  height: 250px;
+  object-fit: contain;
 }
 
 .footer-post {

@@ -21,10 +21,20 @@ import {
   faHouse,
   faUser,
   faThumbsUp,
+  faImage,
+  faQuestion,
 } from '@fortawesome/free-solid-svg-icons';
 import { faMessage } from '@fortawesome/free-regular-svg-icons';
 const app = createApp(App);
-library.add(faUserSecret, faHouse, faUser, faThumbsUp, faMessage);
+library.add(
+  faUserSecret,
+  faHouse,
+  faUser,
+  faThumbsUp,
+  faMessage,
+  faImage,
+  faQuestion
+);
 app.directive('tooltip', Tooltip);
 app.component('font-awesome-icon', FontAwesomeIcon);
 app.component('Dialog', Dialog);

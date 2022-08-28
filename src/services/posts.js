@@ -10,6 +10,24 @@ const getAllPosts = () =>
     },
   });
 
-const createPost = (post) => axios.post(apiUrl, {});
+const createPost = (post, image) => {
+  const formData = new FormData();
+  formData.append('post', post);
+  formData.append('image', image);
 
-export default { getAllPosts };
+  return axios.post(apiUrl, formData, {
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+  });
+};
+
+const likePost = (like) => {
+  axios.post(apiUrl + '/like', like, {
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+  });
+};
+
+export default { getAllPosts, createPost };

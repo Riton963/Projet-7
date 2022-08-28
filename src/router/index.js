@@ -21,6 +21,7 @@ const routes = [
     name: 'profile',
     path: '/profile',
     component: Profile,
+    beforeEnter: authGuard,
   },
 ];
 
