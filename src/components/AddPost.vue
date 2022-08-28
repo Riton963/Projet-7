@@ -83,7 +83,7 @@ export default defineComponent({
     const postText = ref('');
     const createPost = () => {
       const postObject = JSON.stringify({
-        userId: token.uid,
+        userId: token.userId,
         description: postText.value,
       });
       postsServices
@@ -109,7 +109,7 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../styles/main.scss';
 .label-file {
   cursor: pointer;
@@ -159,6 +159,7 @@ img {
     background-color: grey;
     height: 300px;
     margin-bottom: 30px;
+    border-radius: 3px;
   }
 }
 </style>

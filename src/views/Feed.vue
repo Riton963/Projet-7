@@ -3,7 +3,7 @@
     <NavBar />
     <h2>Fil d'actualités</h2>
     <AddPost @add-post="handleAddPost" />
-    <Posts :posts="posts" />
+    <Posts :posts="posts" :profileMode="profileMode" />
   </div>
 </template>
 <script>
@@ -19,6 +19,7 @@ export default defineComponent({
   emits: ['addPost'],
   setup() {
     const posts = ref();
+    const profileMode = ref(false);
     onMounted(() => {
       postsServices
         .getAllPosts()
@@ -44,6 +45,7 @@ export default defineComponent({
     return {
       handleAddPost,
       posts,
+      profileMode,
     };
   },
 });

@@ -16,11 +16,16 @@
             <font-awesome-icon
               icon="fa-solid fa-thumbs-up"
               size="2x"
-              @click="like()"
-            />0
+              @click.once="like(post)"
+            />{{ post.likes }}
           </div>
           <div>
-            0<font-awesome-icon icon="fa-regular fa-message" size="2x" />
+            <font-awesome-icon icon="fa-regular fa-message" size="2x" />
+            <font-awesome-icon
+              icon="fa-solid fa-gear"
+              v-if="profileMode"
+              @click="editPost(post)"
+            />
           </div>
         </div>
       </template>
@@ -31,6 +36,7 @@
 import { defineComponent, ref } from '@vue/runtime-core';
 import Button from 'primevue/button';
 import Image from 'primevue/image';
+import postsServices from '../services/posts';
 
 import Card from 'primevue/card';
 export default defineComponent({
@@ -38,13 +44,33 @@ export default defineComponent({
   components: { Card, Button, Image },
   props: {
     posts: Object,
+    profileMode: Boolean,
   },
-  setup(props) {
+  emits: ['editPost'],
+
+  setup(props, { emit }) {
     props.posts;
-    const like = () => {};
+
+    const like = (post) => {
+      const like = { like: 1, id: post._id, userId: null };
+
+      postsServices
+        .likePost(like)
+        .then((res) => {
+          post.likes++;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    const editPost = (post) => {
+      emit('editPost', post);
+    };
 
     return {
       like,
+      editPost,
     };
   },
 });

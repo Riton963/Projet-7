@@ -95,7 +95,7 @@ export default {
           if (res.status === 200) {
             const token = {
               token: res.data.token,
-              uid: res.data.userId,
+              userId: res.data.userId,
             };
             localStorage.setItem('token', JSON.stringify(token));
             router.push({ name: 'feed' });
@@ -109,7 +109,9 @@ export default {
     const registerUser = () => {
       authServices
         .signUp(firstName.value, lastName.value, login.value, password.value)
-        .then((res) => {})
+        .then((res) => {
+          loginIn();
+        })
         .catch((err) => {
           console.log(err);
         });
@@ -124,12 +126,10 @@ export default {
       lastName,
       login,
       password,
-
       dispalayLoginMsg,
       loginMsg,
       showRegisterUserModal,
       handleRegisterUserModal,
-
       loginIn,
       registerUser,
     };

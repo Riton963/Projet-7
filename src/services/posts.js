@@ -1,10 +1,17 @@
 import axios from 'axios';
+const token = JSON.parse(localStorage.getItem('token'));
 
 const apiUrl = 'http://localhost:3000/api/posts/';
-const token = JSON.parse(localStorage.getItem('token'));
 
 const getAllPosts = () =>
   axios.get(apiUrl, {
+    headers: {
+      Authorization: `Bearer ${token.token}`,
+    },
+  });
+
+const getPostsById = () =>
+  axios.get(apiUrl + token.userId, {
     headers: {
       Authorization: `Bearer ${token.token}`,
     },
@@ -23,11 +30,12 @@ const createPost = (post, image) => {
 };
 
 const likePost = (like) => {
-  axios.post(apiUrl + '/like', like, {
+  like.userId = token.userId;
+  return axios.post(apiUrl + 'like', like, {
     headers: {
       Authorization: `Bearer ${token.token}`,
     },
   });
 };
 
-export default { getAllPosts, createPost };
+export default { getAllPosts, createPost, getPostsById, likePost };

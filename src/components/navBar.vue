@@ -8,6 +8,9 @@
         ><font-awesome-icon icon="fa-solid fa-user" size="2x"
       /></a>
     </nav>
+    <div class="right-element">
+      <font-awesome-icon icon="fa-solid fa-power-off" />
+    </div>
   </header>
 </template>
 
