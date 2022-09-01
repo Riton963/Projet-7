@@ -3,7 +3,7 @@
     <NavBar />
     <h2>Fil d'actualités</h2>
     <AddPost @add-post="handleAddPost" />
-    <Posts :posts="posts" :profileMode="profileMode" />
+    <Posts :allPosts="allPosts" :profileMode="profileMode" />
   </div>
 </template>
 <script>
@@ -18,13 +18,13 @@ export default defineComponent({
   components: { NavBar, Posts, AddPost },
   emits: ['addPost'],
   setup() {
-    const posts = ref();
+    const allPosts = ref();
     const profileMode = ref(false);
     onMounted(() => {
       postsServices
         .getAllPosts()
         .then((res) => {
-          posts.value = res.data;
+          allPosts.value = res.data;
         })
         .catch((err) => {
           console.log(err);
@@ -35,7 +35,7 @@ export default defineComponent({
       postsServices
         .getAllPosts()
         .then((res) => {
-          posts.value = res.data;
+          allPosts.value = res.data;
         })
         .catch((err) => {
           console.log(err);
@@ -44,7 +44,7 @@ export default defineComponent({
 
     return {
       handleAddPost,
-      posts,
+      allPosts,
       profileMode,
     };
   },

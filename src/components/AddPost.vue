@@ -27,6 +27,14 @@
             <font-awesome-icon icon="fa-solid fa-image" />
           </div>
           <img v-if="url" :src="url" alt="" />
+          <label for="file" class="label-file">Choisir une image</label>
+          <input
+            type="file"
+            id="file"
+            class="input-file"
+            accept="image/*"
+            @change="handleImportPostImg"
+          />
           <Textarea v-model="postText" :autoResize="true" rows="5" />
         </div>
       </template>
@@ -38,14 +46,6 @@
           @click="handleAddPostModal()"
         />
         <Button label="Publier" class="p-button-raised" @click="createPost()" />
-        <label for="file" class="label-file">Choisir une image</label>
-        <input
-          type="file"
-          id="file"
-          class="input-file"
-          accept="image/*"
-          @change="handleImportPostImg"
-        />
       </template>
     </Dialog>
   </div>
@@ -109,12 +109,16 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../styles/main.scss';
 .label-file {
+  height: 35px;
   cursor: pointer;
   color: #00b1ca;
   font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .label-file:hover {
   color: #25a5c4;
@@ -125,7 +129,7 @@ export default defineComponent({
 }
 
 .container {
-  width: 70%;
+  width: 50%;
   margin: 0 auto;
   .post-item {
     .add-post-card-content {

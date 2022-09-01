@@ -1,6 +1,7 @@
 <template class="post-content">
   <div class="post-content">
-    <Card v-for="post in posts" class="post-item" :key="post.id">
+    <pre></pre>
+    <Card v-for="post in allPosts" class="post-item" :key="post.id">
       <template #header v-if="post.imageUrl">
         <div class="post-image">
           <img :src="post.imageUrl" />
@@ -14,9 +15,17 @@
         <div class="footer-post">
           <div>
             <font-awesome-icon
+              v-if="!getUserLike(post.usersLiked)"
               icon="fa-solid fa-thumbs-up"
               size="2x"
-              @click.once="like(post)"
+              class="unlike"
+              @click="unLike(post)"
+            />
+            <font-awesome-icon
+              v-if="getUserLike(post.usersLiked)"
+              icon="fa-solid fa-thumbs-up"
+              size="2x"
+              @click="like(post)"
             />{{ post.likes }}
           </div>
           <div>
@@ -33,7 +42,7 @@
   </div>
 </template>
 <script>
-import { defineComponent, ref } from '@vue/runtime-core';
+import { computed, defineComponent, ref } from '@vue/runtime-core';
 import Button from 'primevue/button';
 import Image from 'primevue/image';
 import postsServices from '../services/posts';
@@ -43,21 +52,43 @@ export default defineComponent({
   name: 'Posts',
   components: { Card, Button, Image },
   props: {
-    posts: Object,
+    allPosts: Object,
     profileMode: Boolean,
   },
   emits: ['editPost'],
 
   setup(props, { emit }) {
-    props.posts;
+    props.allPosts;
+    const token = JSON.parse(localStorage.getItem('token'));
+
+    const alreadyLiked = ref(true);
+
+    const getUserLike = (usersLiked) => {
+      return usersLiked.indexOf(token.userId);
+    };
 
     const like = (post) => {
-      const like = { like: 1, id: post._id, userId: null };
+      const like = { like: 1, id: post._id };
 
       postsServices
         .likePost(like)
         .then((res) => {
           post.likes++;
+          post.usersLiked.push(token.userId);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    const unLike = (post) => {
+      const like = { like: -1, id: post._id };
+
+      postsServices
+        .likePost(like)
+        .then((res) => {
+          post.likes--;
+          post.usersLiked.splice(token.userId, 1);
         })
         .catch((err) => {
           console.log(err);
@@ -70,7 +101,10 @@ export default defineComponent({
 
     return {
       like,
+      unLike,
       editPost,
+      alreadyLiked,
+      getUserLike,
     };
   },
 });
@@ -82,14 +116,22 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   .post-item {
-    width: 70%;
+    width: 50%;
     margin: 35px 0;
   }
 }
-
+.unlike {
+  color: red;
+}
+.post-image {
+  height: 280px;
+  overflow: hidden;
+}
 img {
-  height: 250px;
+  width: 100%;
   object-fit: contain;
+  position: relative;
+  top: -100px;
 }
 
 .footer-post {
