@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-let token = JSON.parse(localStorage.getItem('token'));
-
 const httpClient = axios.create({
-  baseURL: 'http://localhost:3000/api/posts/',
+  baseURL: 'http://localhost:3000/api/',
   timeout: 30000, // milliseconds
   headers: {
     Accept: 'application/json',
@@ -11,8 +9,8 @@ const httpClient = axios.create({
 });
 
 httpClient.interceptors.request.use((config) => {
-  token = JSON.parse(localStorage.getItem('token'));
-  config.headers['SmagAuthorization'] = `Bearer ${token.userId}`;
-  console.log(config);
+  config.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
   return config;
 });
+
+export default httpClient;

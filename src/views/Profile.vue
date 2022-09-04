@@ -41,7 +41,7 @@
 import NavBar from '../components/NavBar.vue';
 import EditPostModal from '../components/EditPostModal.vue';
 import Posts from '../components/Posts.vue';
-import { defineComponent, ref, onMounted } from '@vue/runtime-core';
+import { ref, onMounted } from '@vue/runtime-core';
 import postsServices from '../services/posts';
 import authServices from '../services/auth';
 
@@ -53,6 +53,7 @@ export default {
     const profileMode = ref(true);
     const showEditPostModal = ref(false);
     const post = ref();
+    const user = ref();
 
     const handleEditPostModal = (data) => {
       if (data) {
@@ -94,6 +95,7 @@ export default {
     });
     return {
       post,
+      user,
       allPosts,
       profileMode,
       showEditPostModal,

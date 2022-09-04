@@ -15,18 +15,19 @@
         <div class="footer-post">
           <div>
             <font-awesome-icon
-              v-if="!getUserLike(post.usersLiked)"
+              v-if="getUserLike(post.usersLiked)"
               icon="fa-solid fa-thumbs-up"
               size="2x"
               class="unlike"
               @click="unLike(post)"
             />
             <font-awesome-icon
-              v-if="getUserLike(post.usersLiked)"
+              v-if="!getUserLike(post.usersLiked)"
               icon="fa-solid fa-thumbs-up"
               size="2x"
+              class="like"
               @click="like(post)"
-            />{{ post.likes }}
+            />{{ post.usersLiked.length }}
           </div>
           <div>
             <font-awesome-icon icon="fa-regular fa-message" size="2x" />
@@ -42,10 +43,11 @@
   </div>
 </template>
 <script>
-import { computed, defineComponent, ref } from '@vue/runtime-core';
+import { defineComponent, ref } from '@vue/runtime-core';
 import Button from 'primevue/button';
 import Image from 'primevue/image';
 import postsServices from '../services/posts';
+import authServices from '../services/auth';
 
 import Card from 'primevue/card';
 export default defineComponent({
@@ -59,12 +61,12 @@ export default defineComponent({
 
   setup(props, { emit }) {
     props.allPosts;
-    const token = JSON.parse(localStorage.getItem('token'));
+    console.log(authServices.getUserId());
 
     const alreadyLiked = ref(true);
 
     const getUserLike = (usersLiked) => {
-      return usersLiked.indexOf(token.userId);
+      return usersLiked.includes(authServices.getUserId());
     };
 
     const like = (post) => {
@@ -73,8 +75,7 @@ export default defineComponent({
       postsServices
         .likePost(like)
         .then((res) => {
-          post.likes++;
-          post.usersLiked.push(token.userId);
+          post.usersLiked.push(authServices.getUserId());
         })
         .catch((err) => {
           console.log(err);
@@ -87,8 +88,9 @@ export default defineComponent({
       postsServices
         .likePost(like)
         .then((res) => {
-          post.likes--;
-          post.usersLiked.splice(token.userId, 1);
+          post.usersLiked = post.usersLiked.filter(
+            (userId) => userId !== authServices.getUserId()
+          );
         })
         .catch((err) => {
           console.log(err);
@@ -122,7 +124,14 @@ export default defineComponent({
 }
 .unlike {
   color: red;
+  cursor: pointer;
 }
+
+.like {
+  color: blue;
+  cursor: pointer;
+}
+
 .post-image {
   height: 280px;
   overflow: hidden;

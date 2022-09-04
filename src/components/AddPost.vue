@@ -55,7 +55,10 @@ import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import postsServices from '../services/posts';
+import authServices from '../services/auth';
+
 import Textarea from 'primevue/textarea';
+
 import { ref, defineComponent } from '@vue/runtime-core';
 
 export default defineComponent({
@@ -63,8 +66,6 @@ export default defineComponent({
   components: { Card, Button, Dialog, Textarea },
   emits: ['addPost'],
   setup(props, { emit }) {
-    const token = JSON.parse(localStorage.getItem('token'));
-
     // Open/Close add post modal
     const showAddPostModal = ref(false);
     const handleAddPostModal = () => {
@@ -83,7 +84,7 @@ export default defineComponent({
     const postText = ref('');
     const createPost = () => {
       const postObject = JSON.stringify({
-        userId: token.userId,
+        userId: authServices.getUserId(),
         description: postText.value,
       });
       postsServices

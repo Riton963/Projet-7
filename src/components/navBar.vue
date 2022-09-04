@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { ref } from '@vue/runtime-core';
 import { useRouter } from 'vue-router';
 
 export default {

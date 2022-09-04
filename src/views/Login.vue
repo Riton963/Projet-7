@@ -87,17 +87,16 @@ export default {
     const dispalayLoginMsg = ref(false);
     const loginMsg = ref({});
     const showRegisterUserModal = ref(false);
+    const token = null;
 
     const loginIn = () => {
+      console.log('ici');
       authServices
         .login(login.value, password.value)
         .then((res) => {
+          console.log(res.data.token);
           if (res.status === 200) {
-            const token = {
-              token: res.data.token,
-              userId: res.data.userId,
-            };
-            localStorage.setItem('token', JSON.stringify(token));
+            localStorage.setItem('token', res.data.token);
             router.push({ name: 'feed' });
           }
         })

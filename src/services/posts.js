@@ -1,59 +1,37 @@
-import axios from 'axios';
-let token = JSON.parse(localStorage.getItem('token'));
+import httpClient from './httpClient';
+import authServices from '../services/auth';
 
-const apiUrl = 'http://localhost:3000/api/posts/';
+const apiUrl = 'posts/';
 
-const getAllPosts = () =>
-  axios.get(apiUrl, {
-    headers: {
-      Authorization: `Bearer ${token.token}`,
-    },
-  });
+const getAllPosts = () => {
+  return httpClient.get(apiUrl);
+};
 
-const getPostsById = () =>
-  axios.get(apiUrl + token.userId, {
-    headers: {
-      Authorization: `Bearer ${token.token}`,
-    },
-  });
+const getPostsById = () => {
+  return httpClient.get(apiUrl + authServices.getUserId());
+};
 
 const createPost = (post, image) => {
   const formData = new FormData();
   formData.append('post', post);
   formData.append('image', image);
 
-  return axios.post(apiUrl, formData, {
-    headers: {
-      Authorization: `Bearer ${token.token}`,
-    },
-  });
+  return httpClient.post(apiUrl, formData);
 };
 
 const deletePost = (id) => {
-  return axios.delete(apiUrl + id, {
-    headers: {
-      Authorization: `Bearer ${token.token}`,
-    },
-  });
+  return httpClient.delete(apiUrl + id);
 };
 
 const likePost = (like) => {
-  return axios.post(apiUrl + token.userId + '/like', like, {
-    headers: {
-      Authorization: `Bearer ${token.token}`,
-    },
-  });
+  return httpClient.post(apiUrl + authServices.getUserId() + '/like', like);
 };
 
 const updatePost = (postObject, file) => {
   const formData = new FormData();
   formData.append('post', JSON.stringify(postObject));
   formData.append('image', file);
-  return axios.put(apiUrl + postObject.postId, formData, {
-    headers: {
-      Authorization: `Bearer ${token.token}`,
-    },
-  });
+  return httpClient.put(apiUrl + postObject.postId, formData);
 };
 
 export default {

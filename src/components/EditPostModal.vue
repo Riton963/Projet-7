@@ -48,6 +48,8 @@ import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import postsServices from '../services/posts';
 import Textarea from 'primevue/textarea';
+import authServices from '../services/auth';
+
 import { ref, defineComponent, computed } from '@vue/runtime-core';
 
 export default defineComponent({
@@ -68,7 +70,6 @@ export default defineComponent({
     const postSelected = computed(() => {
       return props.post;
     });
-    const token = JSON.parse(localStorage.getItem('token'));
 
     // Open/Close edit post modal
     const closeEditPostModal = () => {
@@ -82,7 +83,6 @@ export default defineComponent({
     const handleImportPostImg = (data) => {
       fileEditPostImage.value = data.target.files[0];
       urlEditPostImage.value = URL.createObjectURL(fileEditPostImage.value);
-      console.log(urlEditPostImage.value);
     };
 
     // Update post
@@ -90,7 +90,7 @@ export default defineComponent({
 
     const editPost = () => {
       const postObject = {
-        userId: token.userId,
+        userId: authServices.getUserId(),
         description: postText.value,
         postId: props.post._id,
       };
