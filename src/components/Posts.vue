@@ -1,13 +1,26 @@
 <template class="post-content">
   <div class="post-content">
-    <pre></pre>
     <Card v-for="post in allPosts" class="post-item" :key="post.id">
       <template #header v-if="post.imageUrl">
         <div class="post-image">
-          <img :src="post.imageUrl" />
+          <img v-if="post.imageUrl" :src="post.imageUrl" />
         </div>
       </template>
-      <template #title> John Doe </template>
+      <template #title>
+        <div class="post-title-content">
+          <div v-if="post.user.profileImgUrl" class="post-profile-img">
+            <img :src="post.user.profileImgUrl" alt="" />
+          </div>
+          {{ post.user.firstName }}
+          {{ post.user.lastName }}
+        </div>
+        <div v-if="!profileMode" class="admin-button" @click="editPost(post)">
+          <font-awesome-icon
+            icon="fa-sharp fa-solid fa-hammer"
+            v-if="getRole(props.userData?.role)"
+          />
+        </div>
+      </template>
       <template #content>
         {{ post.description }}
       </template>
@@ -55,14 +68,13 @@ export default defineComponent({
   components: { Card, Button, Image },
   props: {
     allPosts: Object,
+    userData: Object,
     profileMode: Boolean,
   },
   emits: ['editPost'],
 
   setup(props, { emit }) {
-    props.allPosts;
-    console.log(authServices.getUserId());
-
+    console.log(props.userData);
     const alreadyLiked = ref(true);
 
     const getUserLike = (usersLiked) => {
@@ -97,16 +109,26 @@ export default defineComponent({
         });
     };
 
+    const getRole = (role) => {
+      if (role == 'admin') {
+        console.log('admin');
+        return true;
+      }
+      return false;
+    };
+
     const editPost = (post) => {
       emit('editPost', post);
     };
 
     return {
+      props,
       like,
       unLike,
       editPost,
-      alreadyLiked,
       getUserLike,
+      getRole,
+      alreadyLiked,
     };
   },
 });
@@ -118,8 +140,8 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   .post-item {
-    width: 50%;
     margin: 35px 0;
+    width: 100%;
   }
 }
 .unlike {
@@ -135,12 +157,29 @@ export default defineComponent({
 .post-image {
   height: 280px;
   overflow: hidden;
+  img {
+    width: 100%;
+    object-fit: contain;
+    position: relative;
+    top: -100px;
+  }
 }
-img {
-  width: 100%;
-  object-fit: contain;
-  position: relative;
-  top: -100px;
+.post-title-content {
+  display: flex;
+  align-items: center;
+  .post-profile-img {
+    height: 80px;
+    width: 80px;
+    overflow: hidden;
+    border-radius: 100%;
+    margin-right: 25px;
+
+    img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+    }
+  }
 }
 
 .footer-post {
@@ -149,5 +188,14 @@ img {
   svg {
     margin: 0 15px;
   }
+}
+
+.p-card .p-card-body {
+  padding: 0 !important;
+}
+
+.admin-button {
+  display: flex;
+  justify-content: flex-end;
 }
 </style>

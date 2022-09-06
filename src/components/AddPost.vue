@@ -1,10 +1,14 @@
 <template>
   <div class="container">
-    <Card class="post-item">
+    <Card class="add-post-item">
       <template #content>
         <div class="add-post-card-content">
           <div class="profile-image">
-            <font-awesome-icon icon="fa-solid fa-question" />
+            <font-awesome-icon
+              v-if="!profileImgUrl"
+              icon="fa-solid fa-question"
+            />
+            <img v-if="profileImgUrl" :src="profileImgUrl" alt="" />
           </div>
           <div>
             <Button label="Ajouter un post" @click="handleAddPostModal()" />
@@ -26,7 +30,7 @@
           <div v-if="!url" class="add-image">
             <font-awesome-icon icon="fa-solid fa-image" />
           </div>
-          <img v-if="url" :src="url" alt="" />
+          <img v-if="url" :src="url" alt="" class="add-post-preview" />
           <label for="file" class="label-file">Choisir une image</label>
           <input
             type="file"
@@ -65,6 +69,9 @@ export default defineComponent({
   name: 'AddPost',
   components: { Card, Button, Dialog, Textarea },
   emits: ['addPost'],
+  props: {
+    profileImgUrl: String,
+  },
   setup(props, { emit }) {
     // Open/Close add post modal
     const showAddPostModal = ref(false);
@@ -84,7 +91,7 @@ export default defineComponent({
     const postText = ref('');
     const createPost = () => {
       const postObject = JSON.stringify({
-        userId: authServices.getUserId(),
+        user: authServices.getUserId(),
         description: postText.value,
       });
       postsServices
@@ -130,9 +137,9 @@ export default defineComponent({
 }
 
 .container {
-  width: 50%;
   margin: 0 auto;
-  .post-item {
+  .add-post-item {
+    border-top: solid 4px firebrick;
     .add-post-card-content {
       padding: 0 20%;
       display: flex;
@@ -144,12 +151,18 @@ export default defineComponent({
         width: 80px;
         border-radius: 100%;
         @include display-center;
+        overflow: hidden;
+        img {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+        }
       }
     }
   }
 }
 
-img {
+.add-post-preview {
   height: 250px;
   object-fit: contain;
   margin-bottom: 30px;

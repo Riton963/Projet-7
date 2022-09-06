@@ -1,26 +1,64 @@
 <template>
   <div>
     <NavBar />
-    <h2>Fil d'actualités</h2>
-    <AddPost @add-post="handleAddPost" />
-    <Posts :allPosts="allPosts" :profileMode="profileMode" />
+    <div class="content">
+      <div class="left-side">
+        <Me :userData="userData" />
+      </div>
+      <div class="midle">
+        <h2>Fil d'actualités</h2>
+        <AddPost
+          @add-post="handleAddPost"
+          :profileImgUrl="userData?.profileImgUrl"
+        />
+        <Posts
+          :allPosts="allPosts"
+          :profileMode="profileMode"
+          @editPost="handleEditPostModal"
+          :userData="userData"
+        />
+      </div>
+      <div class="right-side"></div>
+    </div>
+    <EditPostModal
+      :showEditPostModal="showEditPostModal"
+      :post="post"
+      @closeEditPostModal="handleEditPostModal"
+    />
   </div>
 </template>
 <script>
-import { ref, onMounted, defineComponent } from '@vue/runtime-core';
+import { ref, onBeforeMount, defineComponent } from '@vue/runtime-core';
 import postsServices from '../services/posts';
+import authServices from '../services/auth';
+
 import NavBar from '../components/NavBar.vue';
 import Posts from '../components/Posts.vue';
 import AddPost from '../components/AddPost.vue';
+import Me from '../components/Me.vue';
+import EditPostModal from '../components/EditPostModal.vue';
 
 export default defineComponent({
   name: 'Feed',
-  components: { NavBar, Posts, AddPost },
+  components: { NavBar, Me, Posts, AddPost, EditPostModal },
   emits: ['addPost'],
   setup() {
-    const allPosts = ref();
     const profileMode = ref(false);
-    onMounted(() => {
+
+    // Get user info and get all posts
+    const allPosts = ref();
+    const userData = ref();
+
+    onBeforeMount(() => {
+      authServices
+        .getUserById()
+        .then((res) => {
+          userData.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
       postsServices
         .getAllPosts()
         .then((res) => {
@@ -42,19 +80,71 @@ export default defineComponent({
         });
     };
 
+    // Edit admin modal
+    const showEditPostModal = ref(false);
+    const post = ref();
+
+    const handleEditPostModal = (data) => {
+      if (data) {
+        post.value = data;
+      }
+      postsServices
+        .getPostsById()
+        .then((res) => {
+          allPosts.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      showEditPostModal.value = !showEditPostModal.value;
+    };
+
+    const urlProfileImage = ref();
+    const fileProfileImage = ref('');
+    const handleImportProfileImage = (data) => {
+      fileProfileImage.value = data.target.files[0];
+      urlProfileImage.value = URL.createObjectURL(fileProfileImage.value);
+      authServices
+        .addProfileImage(fileProfileImage.value)
+        .then((res) => {})
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
     return {
       handleAddPost,
       allPosts,
       profileMode,
+      userData,
+      showEditPostModal,
+      post,
+      handleEditPostModal,
+      handleImportProfileImage,
     };
   },
 });
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+.content {
+  width: 100%;
+  display: flex;
+}
+.left-side {
+  width: 25%;
+}
+.midle {
+  width: 50%;
+}
+.right-side {
+  width: 25%;
+}
+
 div {
   h2 {
     display: flex;
     justify-content: center;
+    margin: 15px 0;
   }
 }
 </style>

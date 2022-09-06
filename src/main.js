@@ -25,6 +25,7 @@ import {
   faQuestion,
   faPowerOff,
   faGear,
+  faHammer,
 } from '@fortawesome/free-solid-svg-icons';
 import { faMessage } from '@fortawesome/free-regular-svg-icons';
 const app = createApp(App);
@@ -37,7 +38,8 @@ library.add(
   faImage,
   faQuestion,
   faPowerOff,
-  faGear
+  faGear,
+  faHammer
 );
 app.directive('tooltip', Tooltip);
 app.component('font-awesome-icon', FontAwesomeIcon);

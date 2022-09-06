@@ -17,6 +17,26 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.p-button {
+  background-color: firebrick !important;
+  border: 1px solid firebrick !important;
+}
+
+.p-button:enabled:hover {
+  background: firebrick !important;
+  color: #ffffff !important;
+  border-color: firebrick !important;
+}
+
+.p-button:enabled:active {
+  background: firebrick !important;
+  color: #ffffff !important;
+  border-color: firebrick !important;
+}
+
+.p-button:focus {
+  box-shadow: none !important ;
+}
 body {
   background-color: #fafbfc;
 }

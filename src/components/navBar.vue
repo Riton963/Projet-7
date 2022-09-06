@@ -1,16 +1,23 @@
 <template>
   <header class="nav-bar">
     <nav>
-      <a href="#" @click="handleFeedPage()"
-        ><font-awesome-icon icon="fa-solid fa-house" size="2x"
-      /></a>
-      <a href="#" @click="handleProfilePage()"
-        ><font-awesome-icon icon="fa-solid fa-user" size="2x"
-      /></a>
+      <div></div>
+      <div>
+        <a href="#" @click="handleFeedPage()"
+          ><font-awesome-icon icon="fa-solid fa-house" size="2x"
+        /></a>
+        <a href="#" @click="handleProfilePage()"
+          ><font-awesome-icon icon="fa-solid fa-user" size="2x"
+        /></a>
+      </div>
+      <div>
+        <font-awesome-icon
+          icon="fa-solid fa-power-off"
+          size="2x"
+          @click="disconnect()"
+        />
+      </div>
     </nav>
-    <div class="right-element">
-      <font-awesome-icon icon="fa-solid fa-power-off" />
-    </div>
   </header>
 </template>
 
@@ -31,26 +38,32 @@ export default {
     const handleProfilePage = () => {
       router.push({ name: 'profile' });
     };
+
+    const disconnect = () => {
+      localStorage.removeItem('token');
+      location.reload();
+    };
+
     return {
       handleFeedPage,
       handleProfilePage,
+      disconnect,
     };
   },
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .nav-bar {
   height: 62px;
-  background-color: #4e5166;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
+  background-color: firebrick;
   nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 95%;
+    margin: 0 auto;
     a {
       text-decoration: none;
       color: white;

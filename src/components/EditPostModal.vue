@@ -90,7 +90,7 @@ export default defineComponent({
 
     const editPost = () => {
       const postObject = {
-        userId: authServices.getUserId(),
+        user: authServices.getUserId(),
         description: postText.value,
         postId: props.post._id,
       };

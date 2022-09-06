@@ -1,7 +1,7 @@
 import httpClient from './httpClient';
 import VueJwtDecode from 'vue-jwt-decode';
 
-const apiUrl = 'http://localhost:3000/api/users/';
+const apiUrl = 'users/';
 
 const signUp = (firstName, lastName, email, password) =>
   httpClient.post(apiUrl + 'signup', {
@@ -22,11 +22,11 @@ const getUserId = () => {
 const addProfileImage = (file) => {
   const formData = new FormData();
   formData.append('image', file);
-  return httpClient.put(apiUrl + token.userId, formData);
+  return httpClient.put(apiUrl + getUserId(), formData);
 };
 
 const getUserById = () => {
-  return httpClient.get(apiUrl, token.userId);
+  return httpClient.get(apiUrl + getUserId());
 };
 
 export default { signUp, login, addProfileImage, getUserById, getUserId };

@@ -9,8 +9,8 @@
               v-if="!urlProfileImage"
               icon="fa-solid fa-image"
             />
+            <img v-if="urlProfileImage" :src="urlProfileImage" alt="" />
           </label>
-          <img v-if="urlProfileImage" :src="urlProfileImage" alt="" />
 
           <input
             type="file"
@@ -22,14 +22,20 @@
         </div>
       </div>
     </div>
-    <div class="posts">
-      <h2>posts</h2>
-      <Posts
-        :allPosts="allPosts"
-        :profileMode="profileMode"
-        @editPost="handleEditPostModal"
-      />
+    <div class="profile-content">
+      <div class="left-side"></div>
+      <div class="midle">
+        <h2>posts</h2>
+        <Posts
+          :allPosts="allPosts"
+          :userData="userData"
+          :profileMode="profileMode"
+          @editPost="handleEditPostModal"
+        />
+      </div>
+      <div class="right-side"></div>
     </div>
+    <div class="profile-posts"></div>
     <EditPostModal
       :showEditPostModal="showEditPostModal"
       :post="post"
@@ -41,7 +47,7 @@
 import NavBar from '../components/NavBar.vue';
 import EditPostModal from '../components/EditPostModal.vue';
 import Posts from '../components/Posts.vue';
-import { ref, onMounted } from '@vue/runtime-core';
+import { ref, onBeforeMount } from '@vue/runtime-core';
 import postsServices from '../services/posts';
 import authServices from '../services/auth';
 
@@ -54,6 +60,7 @@ export default {
     const showEditPostModal = ref(false);
     const post = ref();
     const user = ref();
+    const userData = ref();
 
     const handleEditPostModal = (data) => {
       if (data) {
@@ -70,7 +77,7 @@ export default {
       showEditPostModal.value = !showEditPostModal.value;
     };
 
-    const urlProfileImage = ref('');
+    const urlProfileImage = ref();
     const fileProfileImage = ref('');
     const handleImportProfileImage = (data) => {
       fileProfileImage.value = data.target.files[0];
@@ -83,11 +90,21 @@ export default {
         });
     };
 
-    onMounted(() => {
+    onBeforeMount(() => {
       postsServices
         .getPostsById()
         .then((res) => {
           allPosts.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      authServices
+        .getUserById()
+        .then((res) => {
+          urlProfileImage.value = res.data.profileImgUrl;
+          userData.value = res.data;
         })
         .catch((err) => {
           console.log(err);
@@ -97,6 +114,7 @@ export default {
       post,
       user,
       allPosts,
+      userData,
       profileMode,
       showEditPostModal,
       urlProfileImage,
@@ -108,15 +126,8 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-div {
-  h2 {
-    display: flex;
-    justify-content: center;
-  }
-}
-
 .label-file {
-  height: 55px;
+  height: 100%;
   font-size: 30px;
   cursor: pointer;
   color: #00b1ca;
@@ -124,6 +135,11 @@ div {
   display: flex;
   justify-content: center;
   align-items: center;
+  img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+  }
 }
 .label-file:hover {
   color: #25a5c4;
@@ -155,10 +171,12 @@ div {
       background-color: white;
       border-radius: 100%;
       overflow: hidden;
-      img {
-        width: 100%;
-      }
     }
   }
+}
+
+.profile-content {
+  width: 100%;
+  display: flex;
 }
 </style>
