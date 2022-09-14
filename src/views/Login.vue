@@ -87,7 +87,6 @@ export default {
     const dispalayLoginMsg = ref(false);
     const loginMsg = ref({});
     const showRegisterUserModal = ref(false);
-    const token = null;
 
     const loginIn = () => {
       authServices

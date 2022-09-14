@@ -140,6 +140,7 @@ export default defineComponent({
   margin: 0 auto;
   .add-post-item {
     border-top: solid 4px firebrick;
+    margin-bottom: 25px;
     .add-post-card-content {
       padding: 0 20%;
       display: flex;

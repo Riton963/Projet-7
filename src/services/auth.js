@@ -19,14 +19,32 @@ const getUserId = () => {
   return VueJwtDecode.decode(localStorage.getItem('token')).userId;
 };
 
-const addProfileImage = (file) => {
+const addProfileImage = (fileProfileImage) => {
   const formData = new FormData();
-  formData.append('image', file);
-  return httpClient.put(apiUrl + getUserId(), formData);
+  formData.append('image', fileProfileImage);
+  return httpClient.put(apiUrl + '/profileImg/' + getUserId(), formData);
+};
+
+const addCoverImage = (fileCoverImage) => {
+  const formData = new FormData();
+  formData.append('image', fileCoverImage);
+  return httpClient.put(apiUrl + '/coverImg/' + getUserId(), formData);
 };
 
 const getUserById = () => {
   return httpClient.get(apiUrl + getUserId());
 };
 
-export default { signUp, login, addProfileImage, getUserById, getUserId };
+const updateUserProfile = (userData) => {
+  return httpClient.put(apiUrl + getUserId(), { userData: userData });
+};
+
+export default {
+  signUp,
+  login,
+  addProfileImage,
+  addCoverImage,
+  getUserById,
+  getUserId,
+  updateUserProfile,
+};

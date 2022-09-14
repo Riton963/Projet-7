@@ -3,7 +3,8 @@
     <Card v-for="post in allPosts" class="post-item" :key="post.id">
       <template #header v-if="post.imageUrl">
         <div class="post-image">
-          <img v-if="post.imageUrl" :src="post.imageUrl" />
+          <!-- <img v-if="post.imageUrl" :src="post.imageUrl" /> -->
+          <Image :src="post.imageUrl" alt="Image" preview />
         </div>
       </template>
       <template #title>
@@ -14,9 +15,13 @@
           {{ post.user.firstName }}
           {{ post.user.lastName }}
         </div>
-        <div v-if="!profileMode" class="admin-button" @click="editPost(post)">
+        <div
+          v-if="origin == 'profile'"
+          class="admin-button"
+          @click="editPost(post)"
+        >
           <font-awesome-icon
-            icon="fa-sharp fa-solid fa-hammer"
+            icon="fa-sharp fa-solid fa-gear"
             v-if="getRole(props.userData?.role)"
           />
         </div>
@@ -45,8 +50,9 @@
           <div>
             <font-awesome-icon icon="fa-regular fa-message" size="2x" />
             <font-awesome-icon
-              icon="fa-solid fa-gear"
-              v-if="profileMode"
+              icon="fa-solid fa-pencil"
+              size="2x"
+              v-if="origin == 'profile'"
               @click="editPost(post)"
             />
           </div>
@@ -69,12 +75,11 @@ export default defineComponent({
   props: {
     allPosts: Object,
     userData: Object,
-    profileMode: Boolean,
+    origin: String,
   },
   emits: ['editPost'],
 
   setup(props, { emit }) {
-    console.log(props.userData);
     const alreadyLiked = ref(true);
 
     const getUserLike = (usersLiked) => {
@@ -111,7 +116,6 @@ export default defineComponent({
 
     const getRole = (role) => {
       if (role == 'admin') {
-        console.log('admin');
         return true;
       }
       return false;
@@ -140,7 +144,7 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   .post-item {
-    margin: 35px 0;
+    margin-bottom: 25px;
     width: 100%;
   }
 }
@@ -155,14 +159,8 @@ export default defineComponent({
 }
 
 .post-image {
-  height: 280px;
+  max-height: 380px;
   overflow: hidden;
-  img {
-    width: 100%;
-    object-fit: contain;
-    position: relative;
-    top: -100px;
-  }
 }
 .post-title-content {
   display: flex;
@@ -185,9 +183,6 @@ export default defineComponent({
 .footer-post {
   display: flex;
   justify-content: space-between;
-  svg {
-    margin: 0 15px;
-  }
 }
 
 .p-card .p-card-body {

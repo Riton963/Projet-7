@@ -1,19 +1,19 @@
 <template>
   <div>
     <NavBar />
+    <h2>Fil d'actualités</h2>
     <div class="content">
       <div class="left-side">
-        <Me :userData="userData" />
+        <Me :userData="userData" :origin="origin" />
       </div>
       <div class="midle">
-        <h2>Fil d'actualités</h2>
         <AddPost
           @add-post="handleAddPost"
           :profileImgUrl="userData?.profileImgUrl"
         />
         <Posts
           :allPosts="allPosts"
-          :profileMode="profileMode"
+          :origin="origin"
           @editPost="handleEditPostModal"
           :userData="userData"
         />
@@ -43,7 +43,7 @@ export default defineComponent({
   components: { NavBar, Me, Posts, AddPost, EditPostModal },
   emits: ['addPost'],
   setup() {
-    const profileMode = ref(false);
+    const origin = ref('feed');
 
     // Get user info and get all posts
     const allPosts = ref();
@@ -115,7 +115,7 @@ export default defineComponent({
     return {
       handleAddPost,
       allPosts,
-      profileMode,
+      origin,
       userData,
       showEditPostModal,
       post,

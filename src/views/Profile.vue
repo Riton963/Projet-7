@@ -2,6 +2,7 @@
   <div>
     <NavBar />
     <div class="profile-header">
+      <img :src="urlCoverImage" alt="cover-image" class="cover-image" />
       <div class="profile-image-container">
         <div class="profile-image">
           <label for="editProfileImage" class="label-file">
@@ -21,19 +22,38 @@
           />
         </div>
       </div>
+      <div class="edit-cover-img">
+        <label for="editCoverImage" class="label-file">
+          <font-awesome-icon icon="fa-solid fa-image" size="2x" />
+        </label>
+
+        <input
+          type="file"
+          id="editCoverImage"
+          class="input-file"
+          accept="image/*"
+          @change="handleImportCoverImage"
+        />
+      </div>
     </div>
+    <h2>Mes posts</h2>
     <div class="profile-content">
       <div class="left-side"></div>
       <div class="midle">
-        <h2>posts</h2>
         <Posts
           :allPosts="allPosts"
           :userData="userData"
-          :profileMode="profileMode"
+          :origin="origin"
           @editPost="handleEditPostModal"
         />
       </div>
-      <div class="right-side"></div>
+      <div class="right-side">
+        <Me
+          :userData="userData"
+          :origin="origin"
+          @editProfile="editProfile()"
+        />
+      </div>
     </div>
     <div class="profile-posts"></div>
     <EditPostModal
@@ -47,20 +67,22 @@
 import NavBar from '../components/NavBar.vue';
 import EditPostModal from '../components/EditPostModal.vue';
 import Posts from '../components/Posts.vue';
+import Me from '../components/Me.vue';
+
 import { ref, onBeforeMount } from '@vue/runtime-core';
 import postsServices from '../services/posts';
 import authServices from '../services/auth';
 
 export default {
   name: 'Profile',
-  components: { NavBar, Posts, EditPostModal },
+  components: { NavBar, Posts, EditPostModal, Me },
   setup() {
     const allPosts = ref();
-    const profileMode = ref(true);
     const showEditPostModal = ref(false);
     const post = ref();
     const user = ref();
     const userData = ref();
+    const origin = ref('profile');
 
     const handleEditPostModal = (data) => {
       if (data) {
@@ -78,10 +100,11 @@ export default {
     };
 
     const urlProfileImage = ref();
-    const fileProfileImage = ref('');
+    const fileProfileImage = ref();
     const handleImportProfileImage = (data) => {
       fileProfileImage.value = data.target.files[0];
       urlProfileImage.value = URL.createObjectURL(fileProfileImage.value);
+      userData.value.profileImgUrl = urlProfileImage.value;
       authServices
         .addProfileImage(fileProfileImage.value)
         .then((res) => {})
@@ -90,21 +113,45 @@ export default {
         });
     };
 
-    onBeforeMount(() => {
-      postsServices
-        .getPostsById()
-        .then((res) => {
-          allPosts.value = res.data;
-        })
+    const urlCoverImage = ref();
+    const fileCoverImage = ref();
+    const handleImportCoverImage = (data) => {
+      console.log('tests');
+      fileCoverImage.value = data.target.files[0];
+      urlCoverImage.value = URL.createObjectURL(fileCoverImage.value);
+      userData.value.coverImgUrl = urlCoverImage.value;
+      authServices
+        .addCoverImage(fileCoverImage.value)
+        .then((res) => {})
         .catch((err) => {
           console.log(err);
         });
+    };
 
+    const editProfile = () => {
+      authServices
+        .updateUserProfile(userData.value)
+        .then((res) => {})
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    onBeforeMount(() => {
       authServices
         .getUserById()
         .then((res) => {
           urlProfileImage.value = res.data.profileImgUrl;
+          urlCoverImage.value = res.data.coverImgUrl;
           userData.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      postsServices
+        .getPostsById()
+        .then((res) => {
+          allPosts.value = res.data;
         })
         .catch((err) => {
           console.log(err);
@@ -115,12 +162,16 @@ export default {
       user,
       allPosts,
       userData,
-      profileMode,
+      origin,
       showEditPostModal,
       urlProfileImage,
       fileProfileImage,
+      urlCoverImage,
+      fileCoverImage,
       handleEditPostModal,
       handleImportProfileImage,
+      handleImportCoverImage,
+      editProfile,
     };
   },
 };
@@ -150,15 +201,30 @@ export default {
 }
 
 .profile-header {
-  background-image: url('../assets/img/profile-header.jpg');
-  background-color: #ccc;
-  background-position: 50%;
-  background-repeat: no-repeat;
-  background-size: cover;
   height: 500px;
   width: 100%;
   display: flex;
   align-items: center;
+  overflow: hidden;
+  .cover-image {
+    width: 100%;
+    height: 500px;
+    position: absolute;
+    z-index: -1;
+    object-fit: cover;
+  }
+  .edit-cover-img {
+    margin-top: 400px;
+    display: flex;
+    width: 100px;
+    height: 100px;
+    background-color: #fafbfc;
+    border-top-left-radius: 100%;
+    svg {
+      margin: auto;
+      cursor: pointer;
+    }
+  }
   .profile-image-container {
     width: 70%;
     margin: 0 auto;
