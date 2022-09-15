@@ -3,7 +3,6 @@
     <Card v-for="post in allPosts" class="post-item" :key="post.id">
       <template #header v-if="post.imageUrl">
         <div class="post-image">
-          <!-- <img v-if="post.imageUrl" :src="post.imageUrl" /> -->
           <Image :src="post.imageUrl" alt="Image" preview />
         </div>
       </template>
@@ -16,14 +15,11 @@
           {{ post.user.lastName }}
         </div>
         <div
-          v-if="origin == 'profile'"
+          v-if="props.userData?.role == 'admin' && props.origin == 'feed'"
           class="admin-button"
           @click="editPost(post)"
         >
-          <font-awesome-icon
-            icon="fa-sharp fa-solid fa-gear"
-            v-if="getRole(props.userData?.role)"
-          />
+          <font-awesome-icon icon="fa-sharp fa-solid fa-gear" />
         </div>
       </template>
       <template #content>
@@ -114,13 +110,6 @@ export default defineComponent({
         });
     };
 
-    const getRole = (role) => {
-      if (role == 'admin') {
-        return true;
-      }
-      return false;
-    };
-
     const editPost = (post) => {
       emit('editPost', post);
     };
@@ -131,7 +120,6 @@ export default defineComponent({
       unLike,
       editPost,
       getUserLike,
-      getRole,
       alreadyLiked,
     };
   },
@@ -160,6 +148,7 @@ export default defineComponent({
 
 .post-image {
   max-height: 380px;
+  width: 100%;
   overflow: hidden;
 }
 .post-title-content {
@@ -192,5 +181,13 @@ export default defineComponent({
 .admin-button {
   display: flex;
   justify-content: flex-end;
+}
+
+svg {
+  cursor: pointer;
+}
+
+.p-image-preview-container {
+  width: 100%;
 }
 </style>

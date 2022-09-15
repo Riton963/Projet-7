@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <Dialog
-      :visible="showDialog"
+      :visible="showEditPostModal"
       :breakpoints="{ '960px': '75vw', '640px': '90vw' }"
       :style="{ width: '50vw' }"
       :modal="true"
@@ -22,7 +22,7 @@
         <Button
           label="Supprimer"
           class="p-button-raised"
-          @click="deletePost(postSelected._id)"
+          @click="deletePost(props.post?._id)"
         />
         <Button
           label="Annuler"
@@ -50,7 +50,7 @@ import postsServices from '../services/posts';
 import Textarea from 'primevue/textarea';
 import authServices from '../services/auth';
 
-import { ref, defineComponent, computed } from '@vue/runtime-core';
+import { ref, defineComponent, computed, onMounted } from '@vue/runtime-core';
 
 export default defineComponent({
   name: 'EditPostModal',
@@ -61,24 +61,24 @@ export default defineComponent({
   },
   emits: ['addPost'],
   setup(props, { emit }) {
-    const showDialog = computed(() => {
+    const postText = ref();
+    const urlEditPostImage = ref();
+    const showEditPostModal = computed(() => {
       if (props.post) {
-        urlEditPostImage.value = props.post.imageUrl;
+        // setup edit post modal content
+        postText.value = props.post?.description;
+        urlEditPostImage.value = props.post?.imageUrl;
       }
       return props.showEditPostModal;
-    });
-    const postSelected = computed(() => {
-      return props.post;
     });
 
     // Open/Close edit post modal
     const closeEditPostModal = () => {
       emit('closeEditPostModal');
-      urlEditPostImage.value = props.post.imageUrl;
+      urlEditPostImage.value = props.post?.imageUrl;
     };
 
     // Import image in edit post modal
-    const urlEditPostImage = ref();
     const fileEditPostImage = ref('');
     const handleImportPostImg = (data) => {
       fileEditPostImage.value = data.target.files[0];
@@ -86,8 +86,6 @@ export default defineComponent({
     };
 
     // Update post
-    const postText = ref('');
-
     const editPost = () => {
       const postObject = {
         user: authServices.getUserId(),
@@ -116,12 +114,13 @@ export default defineComponent({
           console.log(err);
         });
     };
+
     return {
-      postSelected,
+      props,
       postText,
       urlEditPostImage,
       fileEditPostImage,
-      showDialog,
+      showEditPostModal,
       handleImportPostImg,
       closeEditPostModal,
       editPost,

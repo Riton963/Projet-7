@@ -129,7 +129,7 @@ export default {
       bottom: -30px;
       left: 75px;
       border-radius: 100%;
-      border: 4px solid firebrick;
+      border: 3px solid firebrick;
       overflow: hidden;
       img {
         height: 100%;

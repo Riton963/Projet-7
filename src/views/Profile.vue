@@ -2,7 +2,12 @@
   <div>
     <NavBar />
     <div class="profile-header">
-      <img :src="urlCoverImage" alt="cover-image" class="cover-image" />
+      <img
+        v-if="urlCoverImage"
+        :src="urlCoverImage"
+        alt="cover-image"
+        class="cover-image"
+      />
       <div class="profile-image-container">
         <div class="profile-image">
           <label for="editProfileImage" class="label-file">
@@ -99,6 +104,7 @@ export default {
       showEditPostModal.value = !showEditPostModal.value;
     };
 
+    // profile image import
     const urlProfileImage = ref();
     const fileProfileImage = ref();
     const handleImportProfileImage = (data) => {
@@ -113,10 +119,10 @@ export default {
         });
     };
 
+    // cover image import
     const urlCoverImage = ref();
     const fileCoverImage = ref();
     const handleImportCoverImage = (data) => {
-      console.log('tests');
       fileCoverImage.value = data.target.files[0];
       urlCoverImage.value = URL.createObjectURL(fileCoverImage.value);
       userData.value.coverImgUrl = urlCoverImage.value;
@@ -177,52 +183,58 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.label-file {
-  height: 100%;
-  font-size: 30px;
-  cursor: pointer;
-  color: #00b1ca;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  img {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
+.profile-image {
+  .label-file {
+    height: 100%;
+    font-size: 30px;
+    cursor: pointer;
+    color: #00b1ca;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+    }
+  }
+  .label-file:hover {
+    color: #25a5c4;
   }
 }
-.label-file:hover {
-  color: #25a5c4;
-}
-
 .input-file {
   display: none;
 }
 
 .profile-header {
-  height: 500px;
+  height: 300px;
   width: 100%;
   display: flex;
   align-items: center;
   overflow: hidden;
   .cover-image {
     width: 100%;
-    height: 500px;
+    height: 300px;
     position: absolute;
     z-index: -1;
     object-fit: cover;
   }
   .edit-cover-img {
-    margin-top: 400px;
+    margin-top: 200px;
     display: flex;
     width: 100px;
     height: 100px;
     background-color: #fafbfc;
     border-top-left-radius: 100%;
-    svg {
-      margin: auto;
+    border-left: firebrick 3px solid;
+    border-top: firebrick 3px solid;
+    .label-file {
       cursor: pointer;
+      margin: auto;
+    }
+    .label-file:hover {
+      color: #25a5c4;
     }
   }
   .profile-image-container {
@@ -236,6 +248,7 @@ export default {
       width: 200px;
       background-color: white;
       border-radius: 100%;
+      border: firebrick 3px solid;
       overflow: hidden;
     }
   }
