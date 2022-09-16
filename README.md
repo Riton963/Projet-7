@@ -1,19 +1,29 @@
-# front-end-p7
+# P7
 
 ## Project setup
+
 ```
+In Back-end folder
+npm install
+
+&
+
+In Front-end folder
 npm install
 ```
 
 ### Compiles and hot-reloads for development
+
 ```
+In Back-end folder
+nodemon
+
+&
+
+In Front-end folder
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
 ### Customize configuration
+
 See [Configuration Reference](https://cli.vuejs.org/config/).
