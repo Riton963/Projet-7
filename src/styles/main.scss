@@ -3,3 +3,18 @@
   justify-content: center;
   align-items: center;
 }
+
+.content {
+  display: flex;
+  width: 100%;
+}
+
+.left-side {
+  width: 25%;
+}
+.midle {
+  width: 50%;
+}
+.right-side {
+  width: 25%;
+}

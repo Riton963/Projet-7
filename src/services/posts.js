@@ -7,8 +7,8 @@ const getAllPosts = () => {
   return httpClient.get(apiUrl);
 };
 
-const getPostsById = () => {
-  return httpClient.get(apiUrl + authServices.getUserId());
+const getPostsById = (userId) => {
+  return httpClient.get(apiUrl + userId);
 };
 
 const createPost = (post, image) => {

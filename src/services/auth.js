@@ -31,8 +31,8 @@ const addCoverImage = (fileCoverImage) => {
   return httpClient.put(apiUrl + '/coverImg/' + getUserId(), formData);
 };
 
-const getUserById = () => {
-  return httpClient.get(apiUrl + getUserId());
+const getUserById = (userId) => {
+  return httpClient.get(apiUrl + userId);
 };
 
 const updateUserProfile = (userData) => {

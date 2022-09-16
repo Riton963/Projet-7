@@ -11,8 +11,13 @@
           <div v-if="post.user.profileImgUrl" class="post-profile-img">
             <img :src="post.user.profileImgUrl" alt="" />
           </div>
-          {{ post.user.firstName }}
-          {{ post.user.lastName }}
+          <div
+            @click="handleProfileUserPage(post.user._id)"
+            class="post-user-name"
+          >
+            {{ post.user.firstName }}
+            {{ post.user.lastName }}
+          </div>
         </div>
         <div
           v-if="props.userData?.role == 'admin' && props.origin == 'feed'"
@@ -63,6 +68,7 @@ import Button from 'primevue/button';
 import Image from 'primevue/image';
 import postsServices from '../services/posts';
 import authServices from '../services/auth';
+import { useRouter } from 'vue-router';
 
 import Card from 'primevue/card';
 export default defineComponent({
@@ -76,6 +82,7 @@ export default defineComponent({
   emits: ['editPost'],
 
   setup(props, { emit }) {
+    const router = useRouter();
     const alreadyLiked = ref(true);
 
     const getUserLike = (usersLiked) => {
@@ -114,18 +121,30 @@ export default defineComponent({
       emit('editPost', post);
     };
 
+    const handleProfileUserPage = (userId) => {
+      router.push({
+        name: 'userProfile',
+        params: { userId: userId },
+      });
+    };
+
     return {
       props,
+      router,
       like,
       unLike,
       editPost,
       getUserLike,
       alreadyLiked,
+      handleProfileUserPage,
     };
   },
 });
 </script>
 <style lang="scss" scoped>
+.post-user-name {
+  cursor: pointer;
+}
 .post-content {
   display: flex;
   flex-direction: column;

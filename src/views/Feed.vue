@@ -51,7 +51,7 @@ export default defineComponent({
 
     onBeforeMount(() => {
       authServices
-        .getUserById()
+        .getUserById(authServices.getUserId())
         .then((res) => {
           userData.value = res.data;
         })
@@ -126,20 +126,7 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
-.content {
-  width: 100%;
-  display: flex;
-}
-.left-side {
-  width: 25%;
-}
-.midle {
-  width: 50%;
-}
-.right-side {
-  width: 25%;
-}
-
+@import '../styles/main';
 div {
   h2 {
     display: flex;
