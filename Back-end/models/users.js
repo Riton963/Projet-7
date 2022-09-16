@@ -10,6 +10,7 @@ const userSchema = mongoose.Schema({
   coverImgUrl: { type: String },
   profileImgUrl: { type: String },
   role: { type: String, default: 'user', required: true },
+  userFollowed: { type: Array, required: true },
 });
 
 userSchema.plugin(uniqueValidator);

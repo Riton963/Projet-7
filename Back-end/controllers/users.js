@@ -10,6 +10,7 @@ exports.signup = (req, res, next) => {
         profileImgUrl: null,
         coverImgUrl: null,
         job: null,
+        userFollowed: [],
         email: req.body.email,
         password: hash,
         firstName: req.body.firstName,
@@ -103,7 +104,34 @@ exports.getUserById = (req, res, next) => {
     'lastName',
     'role',
     'job',
+    'userFollowed',
   ])
     .then((user) => res.status(200).json(user))
     .catch((error) => res.status(500).json({ error }));
+};
+
+exports.followUser = (req, res, next) => {
+  if (req.body.follow) {
+    User.updateOne(
+      { _id: req.params.userId },
+      {
+        $push: {
+          userFollowed: req.body.userId,
+        },
+      }
+    )
+      .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+      .catch((error) => res.status(400).json({ error }));
+  } else {
+    User.updateOne(
+      { _id: req.params.userId },
+      {
+        $pull: {
+          userFollowed: req.body.userId,
+        },
+      }
+    )
+      .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+      .catch((error) => res.status(400).json({ error }));
+  }
 };

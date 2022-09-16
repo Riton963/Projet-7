@@ -76,6 +76,9 @@ export default defineComponent({
     // Open/Close add post modal
     const showAddPostModal = ref(false);
     const handleAddPostModal = () => {
+      url.value = '';
+      postText.value = '';
+
       showAddPostModal.value = !showAddPostModal.value;
     };
 

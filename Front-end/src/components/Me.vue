@@ -5,17 +5,24 @@
         <img :src="userData?.profileImgUrl" alt="" />
       </div>
     </header>
-    <div class="me-name">
-      {{ userData?.firstName }}
-      {{ userData?.lastName }}
-    </div>
-    <div class="me-job">{{ userData?.job }}</div>
-    <div class="edit-profile" v-if="origin == 'profile'">
-      <font-awesome-icon
-        icon="fa-solid fa-user-pen"
-        size="3x"
-        @click="handleEditProfileModal()"
-      />
+    <div class="me-content">
+      <div class="name">
+        {{ props.userData?.firstName }}
+        {{ props.userData?.lastName }}
+      </div>
+      <div class="job">{{ userData?.job }}</div>
+      <div class="edit-profile" v-if="origin == 'profile'">
+        <font-awesome-icon
+          icon="fa-solid fa-user-pen"
+          size="3x"
+          @click="handleEditProfileModal()"
+        />
+      </div>
+      {{ userFollowed }}
+      <div v-if="origin == 'userProfile'" class="follow-button">
+        <Button label="Suivre" @click="followUser()"></Button>
+        <Button label="Ne plus suivre" @click="unfollowUser()"></Button>
+      </div>
     </div>
 
     <Dialog
@@ -69,9 +76,11 @@
 </template>
 
 <script>
-import { onBeforeMount, ref } from '@vue/runtime-core';
+import { ref, onBeforeMount } from '@vue/runtime-core';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
+import authServices from '../services/auth';
+
 export default {
   name: 'Me',
   components: {
@@ -85,7 +94,10 @@ export default {
   emits: ['editProfile'],
 
   setup(props, { emit }) {
-    props.userData;
+    let url = new URL(document.location.href);
+    let userId = url.searchParams.get('userId');
+    const userFollowed = ref([]);
+
     // modal edition profile
     const showEditProfileUserModal = ref(false);
     const handleEditProfileModal = () => {
@@ -96,10 +108,57 @@ export default {
       handleEditProfileModal();
     };
 
+    const followUser = () => {
+      userFollowed.value.push(userId);
+      let follow = {
+        userId: userId,
+        follow: 1,
+      };
+      authServices
+        .followUser(follow)
+        .then((res) => {})
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    // Only in UserProfile Page
+    const unfollowUser = () => {
+      let follow = {
+        userId: userId,
+        follow: 0,
+      };
+      userFollowed.value = userFollowed.value.filter(
+        (id) => id !== authServices.getUserId()
+      );
+      authServices
+        .followUser(follow)
+        .then((res) => {})
+        .catch((err) => {
+          console.log(err);
+        });
+    };
+
+    onBeforeMount(() => {
+      if (props.origin == 'userProfile') {
+        authServices
+          .getUserById(authServices.getUserId())
+          .then((res) => {
+            userFollowed.value = res.data.userFollowed;
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    });
+
     return {
       props,
       handleEditProfileModal,
       editProfile,
+      followUser,
+      unfollowUser,
+      userFollowed,
       showEditProfileUserModal,
     };
   },
@@ -138,24 +197,27 @@ export default {
       }
     }
   }
-  .me-name {
-    margin: 60px auto 0 auto;
+  .me-content {
     display: flex;
-    justify-content: center;
-    font-size: 20px;
-  }
-  .me-job {
-    display: flex;
-    justify-content: center;
-    color: grey;
-    font-size: 16px;
-  }
-  .edit-profile {
-    margin: 25px 0;
-    display: flex;
-    justify-content: center;
-    svg {
-      cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    .name {
+      margin: 60px auto 0 auto;
+      font-size: 20px;
+    }
+    .job {
+      color: grey;
+      font-size: 16px;
+    }
+    .edit-profile {
+      margin: 25px 0;
+
+      svg {
+        cursor: pointer;
+      }
+    }
+    .follow-button {
+      margin: 25px 0;
     }
   }
 }
