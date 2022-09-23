@@ -16,7 +16,7 @@ npm install
 
 ```
 In Back-end folder
-nodemon
+npm run start
 
 &
 

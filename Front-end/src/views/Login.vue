@@ -105,7 +105,7 @@ export default {
     const registerUser = () => {
       authServices
         .signUp(firstName.value, lastName.value, login.value, password.value)
-        .then((res) => {
+        .then(() => {
           loginIn();
         })
         .catch((err) => {
