@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
   profileImgUrl: { type: String },
   role: { type: String, default: 'user', required: true },
   userFollowed: { type: Array, required: true },
+  followers: { type: Array, required: true },
 });
 
 userSchema.plugin(uniqueValidator);

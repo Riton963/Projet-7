@@ -32,24 +32,21 @@
       </template>
       <template #footer>
         <div class="footer-post">
-          <div>
+          <div class="like-button">
             <font-awesome-icon
               v-if="getUserLike(post.usersLiked)"
               icon="fa-solid fa-thumbs-up"
-              size="2x"
               class="unlike"
               @click="unLike(post)"
             />
             <font-awesome-icon
               v-if="!getUserLike(post.usersLiked)"
               icon="fa-solid fa-thumbs-up"
-              size="2x"
               class="like"
               @click="like(post)"
-            />{{ post.usersLiked.length }}
+            /> {{ post.usersLiked.length }}
           </div>
           <div>
-            <font-awesome-icon icon="fa-regular fa-message" size="2x" />
             <font-awesome-icon
               icon="fa-solid fa-pencil"
               size="2x"
@@ -164,6 +161,7 @@ export default defineComponent({
   color: blue;
   cursor: pointer;
 }
+
 
 .post-image {
   max-height: 380px;

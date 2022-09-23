@@ -40,7 +40,8 @@ const updateUserProfile = (userData) => {
 };
 
 const followUser = (follow) => {
-  return httpClient.post(apiUrl + 'followUser/' + getUserId(), follow);
+
+  return httpClient.post(apiUrl + 'followUser', follow);
 };
 
 export default {

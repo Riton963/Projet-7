@@ -36,11 +36,11 @@
           <InputText type="text" v-model="login" placeholder="Email" />
         </div>
         <div>
-          <InputText
-            type="text"
+          <Password
             v-model="password"
+            :feedback="false"
             placeholder="Mot de passe"
-          />
+          />  
         </div>
 
         <template #footer>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { ref } from '@vue/runtime-core';
+import { ref, onMounted } from '@vue/runtime-core';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Password from 'primevue/password';
@@ -115,6 +115,12 @@ export default {
     const handleRegisterUserModal = () => {
       showRegisterUserModal.value = !showRegisterUserModal.value;
     };
+
+    onMounted(() => {
+      if (localStorage.getItem('token')) {
+            router.push({ name: 'feed' });
+      }
+    })
 
     return {
       isDisabled,

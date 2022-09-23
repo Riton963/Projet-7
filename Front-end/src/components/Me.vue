@@ -18,10 +18,39 @@
           @click="handleEditProfileModal()"
         />
       </div>
-      {{ userFollowed }}
-      <div v-if="origin == 'userProfile'" class="follow-button">
-        <Button label="Suivre" @click="followUser()"></Button>
-        <Button label="Ne plus suivre" @click="unfollowUser()"></Button>
+      <div v-if="origin == 'feed'" class="follow-info">
+        <div>
+          <p>
+            Following
+          </p>
+          <p class="nb-follow">
+           {{ props.userData?.userFollowed.length }}
+          </p>
+        </div>
+        <div>
+          <p>
+            Followers
+          </p>
+          <p class="nb-follow">
+           {{ props.userData?.followers.length }}
+          </p>
+        </div>
+      </div>
+      <div v-if="origin == 'userProfile'" class="user-profile-info">
+        <div class="follow-button">
+          <Button v-if="!showFollowButton" label="Suivre" @click="followUser()"></Button>
+          <Button v-else label="Ne plus suivre" @click="unfollowUser()"></Button>
+        </div>
+        <div class="follow-info">
+         <div>
+           <p>
+             Followers
+           </p>
+           <p class="nb-follow">
+            {{ followers.length }}
+           </p>
+         </div>
+        </div>
       </div>
     </div>
 
@@ -76,7 +105,7 @@
 </template>
 
 <script>
-import { ref, onBeforeMount } from '@vue/runtime-core';
+import { ref, onBeforeMount, computed } from '@vue/runtime-core';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import authServices from '../services/auth';
@@ -96,9 +125,10 @@ export default {
   setup(props, { emit }) {
     let url = new URL(document.location.href);
     let userId = url.searchParams.get('userId');
-    const userFollowed = ref([]);
+  
 
-    // modal edition profile
+    // Only in Profile page // modal edition profile
+
     const showEditProfileUserModal = ref(false);
     const handleEditProfileModal = () => {
       showEditProfileUserModal.value = !showEditProfileUserModal.value;
@@ -108,11 +138,18 @@ export default {
       handleEditProfileModal();
     };
 
+    // Only in UserProfile Page // follow unfollow user
+
+    const followers = ref([]);
+    const showFollowButton = computed(() =>{
+      return followers.value.includes(authServices.getUserId())
+    });
     const followUser = () => {
-      userFollowed.value.push(userId);
+      followers.value.push(authServices.getUserId());
       let follow = {
         userId: userId,
         follow: 1,
+        ownerId: authServices.getUserId(),
       };
       authServices
         .followUser(follow)
@@ -122,15 +159,16 @@ export default {
         });
     };
 
-    // Only in UserProfile Page
     const unfollowUser = () => {
       let follow = {
         userId: userId,
         follow: 0,
+        ownerId: authServices.getUserId(),
       };
-      userFollowed.value = userFollowed.value.filter(
+      followers.value = followers.value.filter(
         (id) => id !== authServices.getUserId()
       );
+
       authServices
         .followUser(follow)
         .then((res) => {})
@@ -142,9 +180,9 @@ export default {
     onBeforeMount(() => {
       if (props.origin == 'userProfile') {
         authServices
-          .getUserById(authServices.getUserId())
+          .getUserById(userId)
           .then((res) => {
-            userFollowed.value = res.data.userFollowed;
+            followers.value = res.data.followers;
           })
           .catch((err) => {
             console.log(err);
@@ -158,7 +196,8 @@ export default {
       editProfile,
       followUser,
       unfollowUser,
-      userFollowed,
+      followers,
+      showFollowButton,
       showEditProfileUserModal,
     };
   },
@@ -201,6 +240,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 270px;
     .name {
       margin: 60px auto 0 auto;
       font-size: 20px;
@@ -216,8 +256,37 @@ export default {
         cursor: pointer;
       }
     }
-    .follow-button {
-      margin: 25px 0;
+    .user-profile-info {
+      width: 100%;
+     height: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     .follow-button {
+      margin-top: 25px
+     }
+    }
+    .follow-info {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: end;
+      width: 100%;
+      > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border-top: 1px solid lightgray;
+        height: 65px;
+        > p {
+          margin: 0;
+        }
+        > .nb-follow {
+          font-weight: 900;
+        }
+      }
     }
   }
 }

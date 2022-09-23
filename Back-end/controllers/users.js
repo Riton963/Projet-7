@@ -11,6 +11,7 @@ exports.signup = (req, res, next) => {
         coverImgUrl: null,
         job: null,
         userFollowed: [],
+        followers: [],
         email: req.body.email,
         password: hash,
         firstName: req.body.firstName,
@@ -105,33 +106,64 @@ exports.getUserById = (req, res, next) => {
     'role',
     'job',
     'userFollowed',
+    'followers',
+
   ])
     .then((user) => res.status(200).json(user))
     .catch((error) => res.status(500).json({ error }));
 };
 
-exports.followUser = (req, res, next) => {
+exports.followedUser = (req, res, next) => {
   if (req.body.follow) {
     User.updateOne(
-      { _id: req.params.userId },
+      { _id: req.body.userId },
       {
         $push: {
-          userFollowed: req.body.userId,
+          followers: req.body.ownerId,
         },
       }
     )
-      .then(() => res.status(200).json({ message: 'Objet modifié !' }))
-      .catch((error) => res.status(400).json({ error }));
+      .then(() => {
+        User.updateOne(
+          { _id: req.body.ownerId },
+          {
+            $push: {
+              userFollowed: req.body.userId,
+            },
+          }
+        )
+          .then(() => res.status(200).json({ message: 'Objet modifié !' })) 
+          .catch((error) => res.status(400).json({ error })); 
+      }) 
+      .catch((error) => res.status(400).json({ error })); 
   } else {
     User.updateOne(
-      { _id: req.params.userId },
+      { _id: req.body.userId },
       {
         $pull: {
-          userFollowed: req.body.userId,
+          followers: req.body.ownerId,
         },
       }
     )
-      .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+      .then(() => {
+        User.updateOne(
+          { _id: req.body.ownerId },
+          {
+            $pull: {
+              userFollowed: req.body.userId,
+            },
+          }
+        )
+          .then(() => res.status(200).json({ message: 'Objet modifié !' })) 
+          .catch((error) => res.status(400).json({ error })); 
+      })
       .catch((error) => res.status(400).json({ error }));
+      next()
+
   }
+};
+
+exports.followUser = (req, res, next) => {
+
+
 };
