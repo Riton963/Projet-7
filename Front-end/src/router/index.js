@@ -27,9 +27,9 @@ const routes = [
   },
   {
     name: 'userProfile',
-    path: '/userProfile/?userId=:userId',
+    path: '/userProfile/:userId',
     component: UserProfile,
-    beforeEnte: authGuard,
+    beforeEnter: authGuard,
   },
 ];
 

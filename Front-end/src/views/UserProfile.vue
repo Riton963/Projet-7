@@ -8,7 +8,7 @@
       @updateCoverImage="updateCoverImage"
       @updateProfileImage="updateProfileImage"
     />
-    <h2>Posts de {{ userData.firstName }}</h2>
+    <h2>Posts de {{ userData?.firstName }}</h2>
     <div class="content">
       <div class="left-side"></div>
       <div class="midle">
@@ -31,6 +31,7 @@ import Me from '../components/Me.vue';
 
 import postsServices from '../services/posts';
 import authServices from '../services/auth';
+import { useRoute } from 'vue-router';
 
 export default {
   name: 'UserProfile',
@@ -46,8 +47,8 @@ export default {
     const userData = ref();
     const userFollowed = ref();
     const allPosts = ref();
-    let url = new URL(document.location.href);
-    let userId = url.searchParams.get('userId');
+    const router = useRoute();
+    let userId = router.params.userId;
 
     onBeforeMount(() => {
       authServices

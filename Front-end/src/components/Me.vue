@@ -105,10 +105,12 @@
 </template>
 
 <script>
-import { ref, onBeforeMount, computed } from '@vue/runtime-core';
+import { ref, onBeforeMount, computed, watch, toRef, toRefs } from '@vue/runtime-core';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import authServices from '../services/auth';
+import { useRoute } from 'vue-router';
+
 
 export default {
   name: 'Me',
@@ -123,10 +125,9 @@ export default {
   emits: ['editProfile'],
 
   setup(props, { emit }) {
-    let url = new URL(document.location.href);
-    let userId = url.searchParams.get('userId');
-  
-
+    const router = useRoute();
+    let userId = router.params.userId;
+    
     // Only in Profile page // modal edition profile
 
     const showEditProfileUserModal = ref(false);
@@ -178,6 +179,7 @@ export default {
     };
 
     onBeforeMount(() => {
+  
       if (props.origin == 'userProfile') {
         authServices
           .getUserById(userId)
@@ -192,6 +194,7 @@ export default {
 
     return {
       props,
+      router,
       handleEditProfileModal,
       editProfile,
       followUser,

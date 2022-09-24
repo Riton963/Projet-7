@@ -14,7 +14,7 @@
             icon="fa-solid fa-image"
           />
           <img
-            v-if="props.userData?.profileImgUrl"
+            v-else
             :src="props.userData?.profileImgUrl"
             alt="profile-image"
           />

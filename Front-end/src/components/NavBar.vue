@@ -14,6 +14,7 @@
         <font-awesome-icon
           icon="fa-solid fa-power-off"
           size="2x"
+          class="disconnect-button"
           @click="disconnect()"
         />
       </div>
@@ -69,6 +70,9 @@ export default {
       color: white;
       margin: 15px;
     }
+  }
+  .disconnect-button {
+    cursor: pointer;
   }
 }
 </style>

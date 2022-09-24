@@ -68,6 +68,7 @@ exports.updateProfile = (req, res, next) => {
 };
 
 exports.updateProfileImg = (req, res, next) => {
+  
   User.updateOne(
     { _id: req.params.userId },
     {
