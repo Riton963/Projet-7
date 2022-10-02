@@ -21,26 +21,40 @@
         :style="{ width: '50vw' }"
         :modal="true"
         :closable="false"
-        class="register-user-modal"
       >
         <template #header>
           <h2>Inscription</h2>
         </template>
-        <div>
-          <InputText type="text" v-model="firstName" placeholder="Prénom" />
-        </div>
-        <div>
-          <InputText type="text" v-model="lastName" placeholder="Nom" />
-        </div>
-        <div>
-          <InputText type="text" v-model="login" placeholder="Email" />
-        </div>
-        <div>
-          <Password
-            v-model="password"
-            :feedback="false"
-            placeholder="Mot de passe"
-          />  
+        <div class="register-form">
+          <div>
+            <InputText type="text" v-model="firstName" placeholder="Prénom" />
+            <p v-if="errorRegisterMsg.errorMsgFisrtName">
+              {{errorRegisterMsg.errorMsgFisrtName}}
+            </p>
+          </div>
+          <div>
+            <InputText type="text" v-model="lastName" placeholder="Nom" />
+            <p v-if="errorRegisterMsg.errorMsgLastName">
+              {{errorRegisterMsg.errorMsgLastName}} 
+            </p>
+          </div>
+          <div>
+            <InputText type="text" v-model="login" placeholder="Email" />
+            <p v-if="errorRegisterMsg.errorMsgEmail">
+              {{errorRegisterMsg.errorMsgEmail}}
+
+            </p>
+          </div>
+          <div>
+            <Password
+              v-model="password"
+              :feedback="false"
+              placeholder="Mot de passe"
+            />  
+            <p v-if="errorRegisterMsg.errorMsgPwd">
+              {{errorRegisterMsg.errorMsgPwd}}
+            </p>
+          </div>
         </div>
 
         <template #footer>
@@ -61,7 +75,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from '@vue/runtime-core';
+import { ref, onMounted, computed } from '@vue/runtime-core';
 import InputText from 'primevue/inputtext';
 import Dialog from 'primevue/dialog';
 import Password from 'primevue/password';
@@ -102,16 +116,63 @@ export default {
           loginMsg.value = err.response.data;
         });
     };
+    const errorRegisterMsg = ref({
+      errorMsgFisrtName: '',
+      errorMsgLastName: '',
+      errorMsgEmail: '',
+      errorMsgPwd: '',
+    });
+
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+    const validateEmail = () => {
+      if (login.value) {
+        return emailRegex.test(login.value);
+      } else {
+        return false
+      }
+    };
+
+    
     const registerUser = () => {
+      errorRegisterMsg.value.errorMsgFisrtName = '';
+      errorRegisterMsg.value.errorMsgLastName = '';
+      errorRegisterMsg.value.errorMsgEmail = '';
+      errorRegisterMsg.value.errorMsgPwd = '';
+
+      if (!firstName.value) {
+        errorRegisterMsg.value.errorMsgFisrtName = 'Veuillez saisir un prénom';
+      }
+
+      if (!lastName.value) {
+        errorRegisterMsg.value.errorMsgLastName = 'Veuillez saisir un nom';
+      };
+      console.log(validateEmail());
+      if (!validateEmail()) {
+        errorRegisterMsg.value.errorMsgEmail = 'Veuillez saisir un mail valide';
+      };
+
+      if (!password.value) {
+        errorRegisterMsg.value.errorMsgPwd = 'Veuillez saisir un mot de pass';
+      };
+
+      if (!errorRegisterMsg.value.errorMsgFisrtName
+          && !errorRegisterMsg.value.errorMsgLastName
+          && !errorRegisterMsg.value.errorMsgEmail
+          && !errorRegisterMsg.value.errorMsgPwd
+          ) {
+        console.log('register');
       authServices
         .signUp(firstName.value, lastName.value, login.value, password.value)
         .then(() => {
           loginIn();
         })
         .catch((err) => {
+           errorRegisterMsg.value.errorMsgEmail = 'Email déja utillisé';
           console.log(err);
         });
+      }
     };
+
     const handleRegisterUserModal = () => {
       showRegisterUserModal.value = !showRegisterUserModal.value;
     };
@@ -131,6 +192,8 @@ export default {
       dispalayLoginMsg,
       loginMsg,
       showRegisterUserModal,
+      errorRegisterMsg,
+      validateEmail,
       handleRegisterUserModal,
       loginIn,
       registerUser,
@@ -154,7 +217,6 @@ body {
     margin-bottom: 25px;
   }
   .p-button {
-    margin-bottom: 25px;
     background-color: #fd2d01;
     border: 1px solid #ffd7d7;
   }
@@ -205,6 +267,19 @@ body {
     margin-bottom: 25px;
     background-color: #fd2d01;
     border: 1px solid #ffd7d7;
+  }
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    p{
+      margin: 5px 0;
+    }
   }
 }
 </style>
