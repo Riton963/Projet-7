@@ -14,7 +14,10 @@ const getPostsById = (userId) => {
 const createPost = (post, image) => {
   const formData = new FormData();
   formData.append('post', post);
-  formData.append('image', image);
+  if (image) {
+    
+    formData.append('image', image);
+  }
 
   return httpClient.post(apiUrl, formData);
 };

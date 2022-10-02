@@ -1,6 +1,7 @@
 <template>
   <section id="background-img">
     <div class="auth-modal" v-if="isDisabled">
+      <img class="logo-groupomania" src="../assets/img/logo-black.png" alt="">
       <h2>Connexion</h2>
       <InputText type="text" v-model="login" placeholder="Email" />
       <Password
@@ -146,7 +147,7 @@ export default {
       if (!lastName.value) {
         errorRegisterMsg.value.errorMsgLastName = 'Veuillez saisir un nom';
       };
-      console.log(validateEmail());
+      
       if (!validateEmail()) {
         errorRegisterMsg.value.errorMsgEmail = 'Veuillez saisir un mail valide';
       };
@@ -160,20 +161,22 @@ export default {
           && !errorRegisterMsg.value.errorMsgEmail
           && !errorRegisterMsg.value.errorMsgPwd
           ) {
-        console.log('register');
       authServices
         .signUp(firstName.value, lastName.value, login.value, password.value)
         .then(() => {
           loginIn();
         })
         .catch((err) => {
-           errorRegisterMsg.value.errorMsgEmail = 'Email déja utillisé';
-          console.log(err);
+          if (err.response.status === 400) {
+            errorRegisterMsg.value.errorMsgEmail = 'Email déja utillisé';
+          }
         });
       }
     };
 
     const handleRegisterUserModal = () => {
+      login.value = '';
+      password.value = '';
       showRegisterUserModal.value = !showRegisterUserModal.value;
     };
 
@@ -260,6 +263,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  position: relative;
   .p-inputtext {
     margin-bottom: 25px;
   }
@@ -267,6 +271,12 @@ body {
     margin-bottom: 25px;
     background-color: #fd2d01;
     border: 1px solid #ffd7d7;
+  }
+  .logo-groupomania {
+    height: auto;
+    width: 250px;
+    position: absolute;
+    top: -40px;
   }
 }
 

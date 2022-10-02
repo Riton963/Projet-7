@@ -77,6 +77,7 @@ export default defineComponent({
     const showAddPostModal = ref(false);
     const handleAddPostModal = () => {
       url.value = '';
+      file.value = '';
       postText.value = '';
 
       showAddPostModal.value = !showAddPostModal.value;
@@ -92,20 +93,26 @@ export default defineComponent({
 
     // Create post
     const postText = ref('');
+    const postErrorMsg = ref('');
+    
     const createPost = () => {
       const postObject = JSON.stringify({
         user: authServices.getUserId(),
         description: postText.value,
       });
-      postsServices
-        .createPost(postObject, file.value)
-        .then((res) => {
-          handleAddPostModal();
-          emit('addPost', res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (postText.value) {
+        postsServices
+          .createPost(postObject, file.value)
+          .then((res) => {
+            handleAddPostModal();
+            emit('addPost', res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        postErrorMsg.value = 'Veuillez saisir du texte'
+      }
     };
 
     return {

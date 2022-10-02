@@ -16,17 +16,31 @@ exports.getAllPosts = (req, res) => {
 
 exports.createPost = (req, res) => {
   const postObject = JSON.parse(req.body.post);
-  const post = new Post({
-    ...postObject,
-    usersLiked: [],
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${
-      req.file.filename
-    }`,
-  });
-  post
+  console.log(postObject);
+  if (req.file) {
+    const post = new Post({
+      ...postObject,
+      usersLiked: [],
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${
+        req.file.filename
+      }`,
+    });
+    post
     .save()
     .then(() => res.status(201).json(post))
     .catch((error) => res.status(400).json({ error }));
+  } else {
+    console.log(req.file);
+    const post = new Post({
+      ...postObject,
+      usersLiked: [],
+      imageUrl: null,
+    });
+    post
+      .save()
+      .then(() => res.status(201).json(post))
+      .catch((error) => res.status(400).json({ error }));
+  }
 };
 
 exports.getPostsById = (req, res) => {

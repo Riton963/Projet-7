@@ -32,19 +32,24 @@
       </template>
       <template #footer>
         <div class="footer-post">
-          <div class="like-button">
+
+          <div v-if="!post.usersLiked.includes(userId)" class="like-button" @click="like(post)" >
+            <span>J'aime</span>
             <font-awesome-icon
-              v-if="getUserLike(post.usersLiked)"
-              icon="fa-solid fa-thumbs-up"
-              class="unlike"
-              @click="unLike(post)"
-            />
-            <font-awesome-icon
-              v-if="!getUserLike(post.usersLiked)"
               icon="fa-solid fa-thumbs-up"
               class="like"
-              @click="like(post)"
-            /> {{ post.usersLiked.length }}
+            />
+          </div>
+
+          <div v-else class="like-button"  @click="unLike(post)" >
+            <span>Je n'aime plus</span>
+            <font-awesome-icon
+              icon="fa-solid fa-thumbs-up"
+              class="unlike"
+            />
+          </div>
+          <div class="like-count">
+            {{ post.usersLiked.length }}
           </div>
           <div>
             <font-awesome-icon
@@ -81,6 +86,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const router = useRouter();
     const alreadyLiked = ref(true);
+    const userId = ref(authServices.getUserId());
 
     const getUserLike = (usersLiked) => {
       return usersLiked.includes(authServices.getUserId());
@@ -128,6 +134,7 @@ export default defineComponent({
     return {
       props,
       router,
+      userId,
       like,
       unLike,
       editPost,
@@ -142,26 +149,18 @@ export default defineComponent({
 .post-user-name {
   cursor: pointer;
 }
+
 .post-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
   .post-item {
     margin-bottom: 25px;
     width: 100%;
   }
 }
-.unlike {
-  color: red;
-  cursor: pointer;
-}
-
-.like {
-  color: blue;
-  cursor: pointer;
-}
-
 
 .post-image {
   max-height: 380px;
@@ -171,6 +170,7 @@ export default defineComponent({
 .post-title-content {
   display: flex;
   align-items: center;
+
   .post-profile-img {
     height: 80px;
     width: 80px;
@@ -188,7 +188,40 @@ export default defineComponent({
 
 .footer-post {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+
+  .like-button  {
+    height: 30px;
+    background-color: #0080ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    padding: 0 10px;
+    margin-right: 10px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+
+    > span {
+      margin-right: 5px;
+    }
+
+    .unlike {
+      color: red;
+      cursor: pointer;
+    }
+
+    .like {
+      color: blue;
+      cursor: pointer;
+    }
+  }
+
+
+  .like-count {
+    font-weight: bold;
+  }
 }
 
 .p-card .p-card-body {

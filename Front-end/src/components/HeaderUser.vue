@@ -8,7 +8,7 @@
     />
     <div class="profile-image-container">
       <div class="profile-image">
-        <label for="editProfileImage" class="label-file">
+        <label for="editProfileImage" class="label-file" v-if="origin === 'profile'">
           <font-awesome-icon
             v-if="!props.userData?.profileImgUrl"
             icon="fa-solid fa-image"
@@ -19,7 +19,12 @@
             alt="profile-image"
           />
         </label>
-
+          <img
+            v-if="origin === 'userProfile'"
+            :src="props.userData?.profileImgUrl"
+            alt="profile-image"
+            class="user-profile-img"
+          />
         <input
           type="file"
           id="editProfileImage"
@@ -121,6 +126,11 @@ export default defineComponent({
       height: 200px;
       object-fit: cover;
     }
+  }
+  .user-profile-img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
   }
   .label-file:hover {
     color: #25a5c4;
