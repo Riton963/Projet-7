@@ -1,7 +1,7 @@
 <template>
   <section id="background-img">
     <div class="auth-modal" v-if="isDisabled">
-      <img class="logo-groupomania" src="../assets/img/logo-black.png" alt="">
+      <img class="logo-groupomania" src="../assets/img/logo-black.png" alt="" />
       <h2>Connexion</h2>
       <InputText type="text" v-model="login" placeholder="Email" />
       <Password
@@ -30,20 +30,19 @@
           <div>
             <InputText type="text" v-model="firstName" placeholder="Prénom" />
             <p v-if="errorRegisterMsg.errorMsgFisrtName">
-              {{errorRegisterMsg.errorMsgFisrtName}}
+              {{ errorRegisterMsg.errorMsgFisrtName }}
             </p>
           </div>
           <div>
             <InputText type="text" v-model="lastName" placeholder="Nom" />
             <p v-if="errorRegisterMsg.errorMsgLastName">
-              {{errorRegisterMsg.errorMsgLastName}} 
+              {{ errorRegisterMsg.errorMsgLastName }}
             </p>
           </div>
           <div>
             <InputText type="text" v-model="login" placeholder="Email" />
             <p v-if="errorRegisterMsg.errorMsgEmail">
-              {{errorRegisterMsg.errorMsgEmail}}
-
+              {{ errorRegisterMsg.errorMsgEmail }}
             </p>
           </div>
           <div>
@@ -51,9 +50,9 @@
               v-model="password"
               :feedback="false"
               placeholder="Mot de passe"
-            />  
+            />
             <p v-if="errorRegisterMsg.errorMsgPwd">
-              {{errorRegisterMsg.errorMsgPwd}}
+              {{ errorRegisterMsg.errorMsgPwd }}
             </p>
           </div>
         </div>
@@ -129,11 +128,10 @@ export default {
       if (login.value) {
         return emailRegex.test(login.value);
       } else {
-        return false
+        return false;
       }
     };
 
-    
     const registerUser = () => {
       errorRegisterMsg.value.errorMsgFisrtName = '';
       errorRegisterMsg.value.errorMsgLastName = '';
@@ -146,31 +144,32 @@ export default {
 
       if (!lastName.value) {
         errorRegisterMsg.value.errorMsgLastName = 'Veuillez saisir un nom';
-      };
-      
+      }
+
       if (!validateEmail()) {
         errorRegisterMsg.value.errorMsgEmail = 'Veuillez saisir un mail valide';
-      };
+      }
 
       if (!password.value) {
-        errorRegisterMsg.value.errorMsgPwd = 'Veuillez saisir un mot de pass';
-      };
+        errorRegisterMsg.value.errorMsgPwd = 'Veuillez saisir un mot de passe';
+      }
 
-      if (!errorRegisterMsg.value.errorMsgFisrtName
-          && !errorRegisterMsg.value.errorMsgLastName
-          && !errorRegisterMsg.value.errorMsgEmail
-          && !errorRegisterMsg.value.errorMsgPwd
-          ) {
-      authServices
-        .signUp(firstName.value, lastName.value, login.value, password.value)
-        .then(() => {
-          loginIn();
-        })
-        .catch((err) => {
-          if (err.response.status === 400) {
-            errorRegisterMsg.value.errorMsgEmail = 'Email déja utillisé';
-          }
-        });
+      if (
+        !errorRegisterMsg.value.errorMsgFisrtName &&
+        !errorRegisterMsg.value.errorMsgLastName &&
+        !errorRegisterMsg.value.errorMsgEmail &&
+        !errorRegisterMsg.value.errorMsgPwd
+      ) {
+        authServices
+          .signUp(firstName.value, lastName.value, login.value, password.value)
+          .then(() => {
+            loginIn();
+          })
+          .catch((err) => {
+            if (err.response.status === 400) {
+              errorRegisterMsg.value.errorMsgEmail = 'Email déja utillisé';
+            }
+          });
       }
     };
 
@@ -182,9 +181,9 @@ export default {
 
     onMounted(() => {
       if (localStorage.getItem('token')) {
-            router.push({ name: 'feed' });
+        router.push({ name: 'feed' });
       }
-    })
+    });
 
     return {
       isDisabled,
@@ -287,7 +286,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    p{
+    p {
       margin: 5px 0;
     }
   }

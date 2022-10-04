@@ -43,7 +43,7 @@ exports.login = (req, res, next) => {
             userId: user._id,
             token: jwt.sign(
               { userId: user._id },
-              'PANEL_CITRON_LANGAGE_PROMISE_JARVIS',
+              'PANEL_CITRON_LANGAGE_PROMISE_JARVIS_GOLF_ATHENA',
               {
                 expiresIn: '24h',
               }
@@ -68,7 +68,6 @@ exports.updateProfile = (req, res, next) => {
 };
 
 exports.updateProfileImg = (req, res, next) => {
-  
   User.updateOne(
     { _id: req.params.userId },
     {
@@ -108,7 +107,6 @@ exports.getUserById = (req, res, next) => {
     'job',
     'userFollowed',
     'followers',
-
   ])
     .then((user) => res.status(200).json(user))
     .catch((error) => res.status(500).json({ error }));
@@ -133,10 +131,10 @@ exports.followedUser = (req, res, next) => {
             },
           }
         )
-          .then(() => res.status(200).json({ message: 'Objet modifié !' })) 
-          .catch((error) => res.status(400).json({ error })); 
-      }) 
-      .catch((error) => res.status(400).json({ error })); 
+          .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+          .catch((error) => res.status(400).json({ error }));
+      })
+      .catch((error) => res.status(400).json({ error }));
   } else {
     User.updateOne(
       { _id: req.body.userId },
@@ -155,16 +153,12 @@ exports.followedUser = (req, res, next) => {
             },
           }
         )
-          .then(() => res.status(200).json({ message: 'Objet modifié !' })) 
-          .catch((error) => res.status(400).json({ error })); 
+          .then(() => res.status(200).json({ message: 'Objet modifié !' }))
+          .catch((error) => res.status(400).json({ error }));
       })
       .catch((error) => res.status(400).json({ error }));
-      next()
-
+    next();
   }
 };
 
-exports.followUser = (req, res, next) => {
-
-
-};
+exports.followUser = (req, res, next) => {};
