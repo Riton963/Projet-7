@@ -16,7 +16,6 @@ exports.getAllPosts = (req, res) => {
 
 exports.createPost = (req, res) => {
   const postObject = JSON.parse(req.body.post);
-  console.log(postObject);
   if (req.file) {
     const post = new Post({
       ...postObject,
@@ -30,7 +29,6 @@ exports.createPost = (req, res) => {
     .then(() => res.status(201).json(post))
     .catch((error) => res.status(400).json({ error }));
   } else {
-    console.log(req.file);
     const post = new Post({
       ...postObject,
       usersLiked: [],
@@ -61,18 +59,25 @@ exports.getPostsById = (req, res) => {
 exports.deletePost = (req, res) => {
   Post.findOne({ _id: req.params.id })
     .then((post) => {
-      const filename = post.imageUrl.split('/images/')[1];
-      fs.unlink(`images/${filename}`, () => {
+      if (post.imageUrl) {
+        const filename = post.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
+          Post.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Objet supprimé !' }))
+            .catch((error) => res.status(400).json({ error }));
+        });
+      } else {
         Post.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Objet supprimé !' }))
-          .catch((error) => res.status(400).json({ error }));
-      });
+        .then(() => res.status(200).json({ message: 'Objet supprimé !' }))
+        .catch((error) => res.status(400).json({ error }));
+      }
     })
     .catch((error) => res.status(500).json({ error }));
 };
 
 exports.updatePost = (req, res) => {
   if (req.file) {
+
     Post.updateOne(
       { _id: req.params.id },
       {
@@ -86,6 +91,7 @@ exports.updatePost = (req, res) => {
       .then(() => res.status(200).json({ message: 'Objet modifié !' }))
       .catch((error) => res.status(400).json({ error }));
   } else {
+    
     Post.updateOne(
       { _id: req.params.id },
       {
