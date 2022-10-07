@@ -32,30 +32,27 @@
       </template>
       <template #footer>
         <div class="footer-post">
-
-          <div v-if="!post.usersLiked.includes(userId)" class="like-button" @click="like(post)" >
+          <div
+            v-if="!post.usersLiked.includes(userId)"
+            class="like-button"
+            @click="like(post)"
+          >
             <span>J'aime</span>
-            <font-awesome-icon
-              icon="fa-solid fa-thumbs-up"
-              class="like"
-            />
           </div>
 
-          <div v-else class="like-button"  @click="unLike(post)" >
+          <div v-else class="like-button" @click="unLike(post)">
             <span>Je n'aime plus</span>
-            <font-awesome-icon
-              icon="fa-solid fa-thumbs-up"
-              class="unlike"
-            />
           </div>
           <div class="like-count">
-            {{ post.usersLiked.length }}
-          </div>
-          <div>
+            <font-awesome-icon icon="fa-solid fa-thumbs-up" class="like" />
+            <div>
+              {{ post.usersLiked.length }}
+            </div>
             <font-awesome-icon
-              icon="fa-solid fa-pencil"
-              size="2x"
               v-if="origin == 'profile'"
+              icon="fa-solid fa-pencil"
+              class="edit-button"
+              size="2x"
               @click="editPost(post)"
             />
           </div>
@@ -189,8 +186,9 @@ export default defineComponent({
 .footer-post {
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
-  .like-button  {
+  .like-button {
     height: 30px;
     background-color: #0080ff;
     display: flex;
@@ -206,22 +204,23 @@ export default defineComponent({
     > span {
       margin-right: 5px;
     }
-
-    .unlike {
-      color: red;
-      cursor: pointer;
-    }
-
-    .like {
-      color: blue;
-      cursor: pointer;
-    }
   }
-
+  .like {
+    color: #0080ff;
+  }
 
   .like-count {
+    display: flex;
+    align-items: center;
     font-weight: bold;
+    svg {
+      margin-right: 5px;
+    }
   }
+}
+
+.edit-button {
+  cursor: pointer;
 }
 
 .p-card .p-card-body {
@@ -231,10 +230,6 @@ export default defineComponent({
 .admin-button {
   display: flex;
   justify-content: flex-end;
-}
-
-svg {
-  cursor: pointer;
 }
 
 .p-image-preview-container {

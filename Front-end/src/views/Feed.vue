@@ -134,4 +134,19 @@ div {
     margin: 15px 0;
   }
 }
+
+@media (max-width: 1250px) {
+  .left-side {
+    width: 30%;
+    .me-component {
+      width: 25%;
+    }
+  }
+  .midle {
+    width: 65%;
+  }
+  .right-side {
+    display: none;
+  }
+}
 </style>

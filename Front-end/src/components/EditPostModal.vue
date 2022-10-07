@@ -14,6 +14,10 @@
             <font-awesome-icon icon="fa-solid fa-image" />
           </div>
           <img v-if="urlEditPostImage" :src="urlEditPostImage" alt="" />
+          <label for="editPostImage" class="label-file"
+            >Choisir une image</label
+          >
+
           <Textarea v-model="postText" :autoResize="true" rows="5" />
         </div>
       </template>
@@ -29,8 +33,12 @@
           class="p-button-raised"
           @click="closeEditPostModal()"
         />
-        <Button label="Publier" class="p-button-raised" @click="editPost()" />
-        <label for="editPostImage" class="label-file">Choisir une image</label>
+        <Button
+          label="Publier"
+          class="p-button-raised"
+          @click="editPost()"
+          :disabled="!postText"
+        />
         <input
           type="file"
           id="editPostImage"

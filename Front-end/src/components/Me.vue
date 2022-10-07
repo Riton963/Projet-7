@@ -20,36 +20,38 @@
       </div>
       <div v-if="origin == 'feed'" class="follow-info">
         <div>
-          <p>
-            Following
-          </p>
+          <p>Following</p>
           <p class="nb-follow">
-           {{ props.userData?.userFollowed.length }}
+            {{ props.userData?.userFollowed.length }}
           </p>
         </div>
         <div>
-          <p>
-            Followers
-          </p>
+          <p>Followers</p>
           <p class="nb-follow">
-           {{ props.userData?.followers.length }}
+            {{ props.userData?.followers.length }}
           </p>
         </div>
       </div>
       <div v-if="origin == 'userProfile'" class="user-profile-info">
         <div class="follow-button">
-          <Button v-if="!showFollowButton" label="Suivre" @click="followUser()"></Button>
-          <Button v-else label="Ne plus suivre" @click="unfollowUser()"></Button>
+          <Button
+            v-if="!showFollowButton"
+            label="Suivre"
+            @click="followUser()"
+          ></Button>
+          <Button
+            v-else
+            label="Ne plus suivre"
+            @click="unfollowUser()"
+          ></Button>
         </div>
         <div class="follow-info">
-         <div>
-           <p>
-             Followers
-           </p>
-           <p class="nb-follow">
-            {{ followers.length }}
-           </p>
-         </div>
+          <div>
+            <p>Followers</p>
+            <p class="nb-follow">
+              {{ followers.length }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -105,12 +107,18 @@
 </template>
 
 <script>
-import { ref, onBeforeMount, computed, watch, toRef, toRefs } from '@vue/runtime-core';
+import {
+  ref,
+  onBeforeMount,
+  computed,
+  watch,
+  toRef,
+  toRefs,
+} from '@vue/runtime-core';
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import authServices from '../services/auth';
 import { useRoute } from 'vue-router';
-
 
 export default {
   name: 'Me',
@@ -127,7 +135,7 @@ export default {
   setup(props, { emit }) {
     const router = useRoute();
     let userId = router.params.userId;
-    
+
     // Only in Profile page // modal edition profile
 
     const showEditProfileUserModal = ref(false);
@@ -142,8 +150,8 @@ export default {
     // Only in UserProfile Page // follow unfollow user
 
     const followers = ref([]);
-    const showFollowButton = computed(() =>{
-      return followers.value.includes(authServices.getUserId())
+    const showFollowButton = computed(() => {
+      return followers.value.includes(authServices.getUserId());
     });
     const followUser = () => {
       followers.value.push(authServices.getUserId());
@@ -179,7 +187,6 @@ export default {
     };
 
     onBeforeMount(() => {
-  
       if (props.origin == 'userProfile') {
         authServices
           .getUserById(userId)
@@ -209,11 +216,9 @@ export default {
 
 <style scoped lang="scss">
 .me-component {
-  height: 350px;
-  width: 250px;
-  margin: 0 45px;
   background-color: white;
   position: fixed;
+  width: 20%;
   box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%),
     0 1px 3px 0 rgb(0 0 0 / 12%);
   border-radius: 4px;
@@ -222,13 +227,14 @@ export default {
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
     background-color: firebrick;
+    display: flex;
+    justify-content: center;
     .me-profile-img {
       height: 100px;
       width: 100px;
       background-color: white;
       position: relative;
       bottom: -30px;
-      left: 75px;
       border-radius: 100%;
       border: 3px solid firebrick;
       overflow: hidden;
@@ -261,14 +267,14 @@ export default {
     }
     .user-profile-info {
       width: 100%;
-     height: 100%;
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     flex-direction: column;
-     .follow-button {
-      margin-top: 25px
-     }
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      .follow-button {
+        margin-top: 25px;
+      }
     }
     .follow-info {
       display: flex;

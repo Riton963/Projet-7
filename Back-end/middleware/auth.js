@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(
       token,
-      'PANEL_CITRON_LANGAGE_PROMISE_JARVIS'
+      'PANEL_CITRON_LANGAGE_PROMISE_JARVIS_GOLF_ATHENA'
     );
 
     next();

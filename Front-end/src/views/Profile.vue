@@ -125,4 +125,19 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '../styles/main';
+@media (max-width: 1250px) {
+  .right-side {
+    width: 30%;
+    .me-component {
+      width: 25%;
+    }
+  }
+  .midle {
+    width: 65%;
+    margin-left: 5%;
+  }
+  .left-side {
+    display: none;
+  }
+}
 </style>
