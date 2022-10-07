@@ -33,7 +33,10 @@ const likePost = (like) => {
 const updatePost = (postObject, file) => {
   const formData = new FormData();
   formData.append('post', JSON.stringify(postObject));
-  formData.append('image', file);
+  if (file) {
+    console.log('here');
+    formData.append('image', file);
+  }
   return httpClient.put(apiUrl + postObject.postId, formData);
 };
 

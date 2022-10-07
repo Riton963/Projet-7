@@ -32,7 +32,9 @@
       :showEditPostModal="showEditPostModal"
       :post="post"
       @closeEditPostModal="handleEditPostModal"
-    />
+      @updatePost="updatePost"
+      @deletePost="deletePost"
+      />
   </div>
 </template>
 <script>
@@ -41,26 +43,34 @@ import EditPostModal from '../components/EditPostModal.vue';
 import HeaderUser from '../components/HeaderUser.vue';
 import Posts from '../components/Posts.vue';
 import Me from '../components/Me.vue';
-import { ref, onBeforeMount } from '@vue/runtime-core';
+import { ref, onBeforeMount, defineComponent } from '@vue/runtime-core';
 import postsServices from '../services/posts';
 import authServices from '../services/auth';
 
-export default {
+export default defineComponent({
   name: 'Profile',
   components: { NavBar, Posts, EditPostModal, Me, HeaderUser },
   setup() {
     const userId = ref(authServices.getUserId());
     const allPosts = ref();
-    const showEditPostModal = ref(false);
     const post = ref();
     const user = ref();
     const userData = ref();
     const origin = ref('profile');
 
-    const handleEditPostModal = (data) => {
-      if (data) {
-        post.value = data;
+
+
+    // edit post modal
+    const showEditPostModal = ref(false);
+
+     const handleEditPostModal = (postSelected) => {
+      showEditPostModal.value = !showEditPostModal.value;
+      if (postSelected) {
+        post.value = postSelected;
       }
+    };
+
+    const updatePost = () => {
       postsServices
         .getPostsById(userId.value)
         .then((res) => {
@@ -69,8 +79,19 @@ export default {
         .catch((err) => {
           console.log(err);
         });
-      showEditPostModal.value = !showEditPostModal.value;
-    };
+    }
+
+    const deletePost = () => {
+      console.log('here');
+      postsServices
+        .getPostsById(userId.value)
+        .then((res) => {
+          allPosts.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
 
     const editProfile = () => {
       authServices
@@ -80,6 +101,7 @@ export default {
           console.log(err);
         });
     };
+
 
     const updateCoverImage = (data) => {
       userData.value.coverImgUrl = data;
@@ -116,12 +138,14 @@ export default {
       origin,
       showEditPostModal,
       handleEditPostModal,
+      deletePost,
+      updatePost,
+      editProfile,
       updateCoverImage,
       updateProfileImage,
-      editProfile,
     };
   },
-};
+});
 </script>
 <style lang="scss" scoped>
 @import '../styles/main';

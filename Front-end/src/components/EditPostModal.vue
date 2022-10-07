@@ -33,12 +33,8 @@
           class="p-button-raised"
           @click="closeEditPostModal()"
         />
-        <Button
-          label="Publier"
-          class="p-button-raised"
-          @click="editPost()"
-          :disabled="!postText"
-        />
+        <Button label="Publier" class="p-button-raised" @click="editPost()" :disabled="!postText" />
+        <label for="editPostImage" class="label-file">Choisir une image</label>
         <input
           type="file"
           id="editPostImage"
@@ -55,8 +51,8 @@ import Card from 'primevue/card';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import postsServices from '../services/posts';
-import Textarea from 'primevue/textarea';
 import authServices from '../services/auth';
+import Textarea from 'primevue/textarea';
 
 import { ref, defineComponent, computed, onMounted } from '@vue/runtime-core';
 
@@ -67,7 +63,6 @@ export default defineComponent({
     showEditPostModal: Boolean,
     post: Object,
   },
-  emits: ['addPost'],
   setup(props, { emit }) {
     const postText = ref();
     const urlEditPostImage = ref();
@@ -77,6 +72,7 @@ export default defineComponent({
         postText.value = props.post?.description;
         urlEditPostImage.value = props.post?.imageUrl;
       }
+      fileEditPostImage.value = null;
       return props.showEditPostModal;
     });
 
@@ -96,14 +92,14 @@ export default defineComponent({
     // Update post
     const editPost = () => {
       const postObject = {
-        user: authServices.getUserId(),
         description: postText.value,
         postId: props.post._id,
       };
       postsServices
         .updatePost(postObject, fileEditPostImage.value)
         .then((res) => {
-          emit('closeEditPostModal');
+          emit('updatePost');
+          closeEditPostModal();
         })
         .catch((err) => {
           console.log(err);
@@ -113,10 +109,12 @@ export default defineComponent({
     // delete post
 
     const deletePost = (id) => {
+      console.log(id);
       postsServices
         .deletePost(id)
         .then((res) => {
-          emit('closeEditPostModal');
+          emit('deletePost');
+          closeEditPostModal();
         })
         .catch((err) => {
           console.log(err);

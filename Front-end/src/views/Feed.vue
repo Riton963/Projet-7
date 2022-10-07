@@ -8,7 +8,7 @@
       </div>
       <div class="midle">
         <AddPost
-          @add-post="handleAddPost"
+          @addPost="handleAddPost"
           :profileImgUrl="userData?.profileImgUrl"
         />
         <Posts
@@ -24,6 +24,8 @@
       :showEditPostModal="showEditPostModal"
       :post="post"
       @closeEditPostModal="handleEditPostModal"
+      @updatePost="updatePost"
+      @deletePost="deletePost"
     />
   </div>
 </template>
@@ -84,20 +86,34 @@ export default defineComponent({
     const showEditPostModal = ref(false);
     const post = ref();
 
-    const handleEditPostModal = (data) => {
-      if (data) {
-        post.value = data;
+    const handleEditPostModal = (postSelected) => {
+      showEditPostModal.value = !showEditPostModal.value;
+      if (postSelected) {
+        post.value = postSelected;
       }
+    };
+
+    const updatePost = () => {
       postsServices
-        .getPostsById()
+        .getAllPosts()
         .then((res) => {
           allPosts.value = res.data;
         })
         .catch((err) => {
           console.log(err);
         });
-      showEditPostModal.value = !showEditPostModal.value;
-    };
+    }
+
+    const deletePost = () => {
+      postsServices
+        .getAllPosts()
+        .then((res) => {
+          allPosts.value = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
 
     const urlProfileImage = ref();
     const fileProfileImage = ref('');
@@ -120,6 +136,8 @@ export default defineComponent({
       showEditPostModal,
       post,
       handleEditPostModal,
+      updatePost,
+      deletePost,
       handleImportProfileImage,
     };
   },
