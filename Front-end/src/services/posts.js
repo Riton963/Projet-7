@@ -34,7 +34,6 @@ const updatePost = (postObject, file) => {
   const formData = new FormData();
   formData.append('post', JSON.stringify(postObject));
   if (file) {
-    console.log('here');
     formData.append('image', file);
   }
   return httpClient.put(apiUrl + postObject.postId, formData);

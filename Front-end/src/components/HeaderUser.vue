@@ -29,7 +29,7 @@
           type="file"
           id="editProfileImage"
           class="input-file"
-          accept="image/*"
+          accept="image/.jpg, .png, .jpeg"
           @change="handleImportProfileImage"
         />
       </div>
@@ -43,7 +43,7 @@
         type="file"
         id="editCoverImage"
         class="input-file"
-        accept="image/*"
+        accept="image/.jpg, .png, .jpeg"
         @change="handleImportCoverImage"
       />
     </div>

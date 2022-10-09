@@ -124,9 +124,17 @@ export default {
     });
 
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+    const passwordRegex = /^.*(?=.{8,})(?=.*[a-zA-Z])(?=.*\d)(?=.*[!#$%&? "]).*$/;
     const validateEmail = () => {
       if (login.value) {
         return emailRegex.test(login.value);
+      } else {
+        return false;
+      }
+    };
+     const validatePassword = () => {
+      if (password.value) {
+        return passwordRegex.test(password.value);
       } else {
         return false;
       }
@@ -150,8 +158,8 @@ export default {
         errorRegisterMsg.value.errorMsgEmail = 'Veuillez saisir un mail valide';
       }
 
-      if (!password.value) {
-        errorRegisterMsg.value.errorMsgPwd = 'Veuillez saisir un mot de passe';
+      if (!validatePassword()) {
+        errorRegisterMsg.value.errorMsgPwd = 'Veuillez saisir un mot de passe valide 8 caractères min (Ab1!#$%&?)';
       }
 
       if (
@@ -196,6 +204,7 @@ export default {
       showRegisterUserModal,
       errorRegisterMsg,
       validateEmail,
+      validatePassword,
       handleRegisterUserModal,
       loginIn,
       registerUser,

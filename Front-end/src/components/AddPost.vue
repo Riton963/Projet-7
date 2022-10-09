@@ -36,9 +36,12 @@
             type="file"
             id="file"
             class="input-file"
-            accept="image/*"
+            accept="image/.jpg, .png, .jpeg"
             @change="handleImportPostImg"
           />
+          <div class="alert-msg-file" v-if="alertMsgfile">
+            {{alertMsgfile}}
+          </div>
           <Textarea v-model="postText" :autoResize="true" rows="5" />
         </div>
       </template>
@@ -84,11 +87,17 @@ export default defineComponent({
     };
 
     // Import image in add post modal
+    const alertMsgfile = ref('');
     const url = ref('');
     const file = ref('');
     const handleImportPostImg = (data) => {
-      file.value = data.target.files[0];
-      url.value = URL.createObjectURL(file.value);
+      alertMsgfile.value = '';
+      if (data.target.files[0].size > 2097152) {
+        alertMsgfile.value = 'Le fichier est trop gros !'
+      } else {
+        file.value = data.target.files[0];
+        url.value = URL.createObjectURL(file.value);
+      }
     };
 
     // Create post
@@ -120,6 +129,7 @@ export default defineComponent({
       postText,
       url,
       file,
+      alertMsgfile,
       createPost,
       handleAddPostModal,
       handleImportPostImg,
@@ -190,5 +200,11 @@ export default defineComponent({
     margin-bottom: 30px;
     border-radius: 3px;
   }
+}
+
+.alert-msg-file {
+  display: flex;
+  justify-content: center;
+  color: red;
 }
 </style>

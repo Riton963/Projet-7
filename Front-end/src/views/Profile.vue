@@ -82,7 +82,6 @@ export default defineComponent({
     }
 
     const deletePost = () => {
-      console.log('here');
       postsServices
         .getPostsById(userId.value)
         .then((res) => {

@@ -17,7 +17,9 @@
           <label for="editPostImage" class="label-file"
             >Choisir une image</label
           >
-
+          <div class="alert-msg-file" v-if="alertMsgfile">
+            {{alertMsgfile}}
+          </div>
           <Textarea v-model="postText" :autoResize="true" rows="5" />
         </div>
       </template>
@@ -39,7 +41,7 @@
           type="file"
           id="editPostImage"
           class="input-file"
-          accept="image/*"
+          accept="image/.jpg, .png, .jpeg"
           @change="handleImportPostImg"
         />
       </template>
@@ -83,10 +85,17 @@ export default defineComponent({
     };
 
     // Import image in edit post modal
+    const alertMsgfile = ref('');
+
     const fileEditPostImage = ref('');
     const handleImportPostImg = (data) => {
-      fileEditPostImage.value = data.target.files[0];
-      urlEditPostImage.value = URL.createObjectURL(fileEditPostImage.value);
+      alertMsgfile.value = '';
+      if (data.target.files[0].size > 2097152) {
+        alertMsgfile.value = 'Le fichier est trop gros !'
+      } else {
+        fileEditPostImage.value = data.target.files[0];
+        urlEditPostImage.value = URL.createObjectURL(fileEditPostImage.value);
+      }
     };
 
     // Update post
@@ -109,7 +118,6 @@ export default defineComponent({
     // delete post
 
     const deletePost = (id) => {
-      console.log(id);
       postsServices
         .deletePost(id)
         .then((res) => {
@@ -127,6 +135,7 @@ export default defineComponent({
       urlEditPostImage,
       fileEditPostImage,
       showEditPostModal,
+      alertMsgfile,
       handleImportPostImg,
       closeEditPostModal,
       editPost,
@@ -191,5 +200,11 @@ img {
     margin-bottom: 30px;
     border-radius: 3px;
   }
+}
+
+.alert-msg-file {
+  display: flex;
+  justify-content: center;
+  color: red;
 }
 </style>
